@@ -2,6 +2,7 @@ export interface ArticleConfig {
     title: string;
     slug: string;
     sourceFile: string;
+    fullPath?: string;
     description?: string;
 }
 

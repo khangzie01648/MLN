@@ -1,40 +1,40 @@
-import React from "react";
-import { getAllArticlesFlat } from "@/lib/content-config";
-import LabyrinthGrid from "@/components/ui/LabyrinthGrid";
-import CustomCursor from "@/components/ui/CustomCursor";
+import { getAllArticlesFlat } from '../../lib/content-config';
+import LibraryExplorer from '../../components/library/LibraryExplorer';
 
 export default function LibraryPage() {
     const articles = getAllArticlesFlat();
 
     return (
-        <main className="min-h-screen bg-[#050505] text-white pt-24 font-inter relative overflow-x-hidden">
-            <CustomCursor />
+        <div className="min-h-screen pb-20">
+            {/* Hero Section */}
+            <section className="relative h-[40vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+                {/* Glow Effect behind title */}
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[300px] bg-[#d4af37] opacity-10 blur-[120px] rounded-full pointer-events-none"></div>
 
-            {/* SUBTLE FILM GRAIN */}
-            <div className="fixed inset-0 pointer-events-none opacity-[0.03] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay z-0" />
-
-            <div className="max-w-[1600px] mx-auto relative z-10">
-                {/* HEADER */}
-                <header className="mb-20 text-center px-6">
-                    <p className="text-[10px] tracking-[0.4em] text-white/30 uppercase mb-4">
-                        The Collective Unconscious Data-Stream
-                    </p>
-                    <h1 className="text-6xl md:text-8xl font-cinzel font-bold tracking-tight mb-8">
-                        THE LABYRINTH
+                <div className="relative z-10 space-y-4">
+                    <h1 className="font-cinzel text-5xl md:text-7xl font-bold text-transparent bg-clip-text bg-gradient-to-b from-[#d4af37] to-[#8a7020] animate-fade-in-up">
+                        KHO TÀNG CỦA C.G. JUNG
                     </h1>
-                    <div className="w-24 h-[1px] bg-amber-500/50 mx-auto" />
-                </header>
+                    <p className="font-inter text-lg text-gray-400 max-w-2xl mx-auto italic">
+                        "Người không có cảm giác về Lịch sử thì giống như một người không có tai hoặc mắt."
+                    </p>
+                </div>
 
-                <LabyrinthGrid initialArticles={articles} />
+                {/* Decorative divider */}
+                <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#d4af37] to-transparent mt-8 opacity-50"></div>
+            </section>
 
-                {/* FOOTER */}
-                <footer className="mt-32 border-t border-white/5 py-24 px-12 flex justify-between items-center text-[10px] tracking-[0.4em] text-white/20 uppercase">
-                    <span>© 2026 Jung Archive Protocol</span>
-                    <a href="/select" className="hover:text-white transition-colors">
-                        Return to Mandala →
-                    </a>
-                </footer>
-            </div>
-        </main>
+            {/* Main Content */}
+            <LibraryExplorer articles={articles} />
+        </div>
     );
 }
+
+// Simple internal component to avoid server/client conflict if I used motion here directly
+// But wait, LibraryExplorer is client. Page is server.
+// I can't use motion.div here unless I make a registry or use a client wrapper for the title too.
+// For now, I'll stick to standard HTML for the title to keep it Server Component simple,
+// or I can move the Hero into LibraryExplorer?
+// BETTER: Move Hero into LibraryExplorer? No, separating fetching is good.
+// I will just use standard CSS classes for the Title animation or keep it static for now.
+// The prompt "motion_div_placeholder" was a thought, I will replace it with standard div.
