@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # MA TRẬN TOÀN THƯ CARL GUSTAV JUNG (THE ULTIMATE JUNG DATA MATRIX)
 **Phiên bản: Final Deep-Dive (Chi tiết Cực đại)**
 *Mục đích: Bản thiết kế nội dung Blog/Web bao phủ 100% mọi khía cạnh cuộc đời và tư tưởng C.G. Jung.*
@@ -228,3 +229,7 @@
 *   **Tác phẩm:** *Flying Saucers: A Modern Myth of Things Seen in the Skies* (1958).
 *   **Giải mã:** UFO không phải là tàu vũ trụ (hoặc không quan trọng nó có phải là tàu hay không).
 *   **Ý nghĩa tâm lý:** UFO là những "Mandala công nghệ" xuất hiện trên bầu trời. Thời hiện đại mất niềm tin vào Chúa (biểu tượng tròn), nên tâm thức tập thể phóng chiếu hình ảnh tròn trịa, hoàn hảo (cái đĩa bay) lên bầu trời để tìm kiếm sự cứu rỗi từ vũ trụ.
+=======
+# MLN
+SPST
+>>>>>>> origin/main
