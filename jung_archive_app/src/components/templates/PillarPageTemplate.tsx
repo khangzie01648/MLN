@@ -5,9 +5,9 @@ import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, Float, Sparkles, Torus, MeshDistortMaterial } from '@react-three/drei';
 import { EffectComposer, Bloom, ChromaticAberration, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
-import ThematicEntrance from './transitions/ThematicEntrance';
+import ThematicEntrance from '../transitions/ThematicEntrance';
 
-import MeteorEffect from '../components/ui/MeteorEffect';
+import MeteorEffect from '../ui/effects/MeteorEffect';
 
 interface PillarPageProps {
     pillar: {

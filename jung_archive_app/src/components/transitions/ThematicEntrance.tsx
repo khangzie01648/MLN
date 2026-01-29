@@ -356,7 +356,7 @@ const GenericV4 = ({ id, color }: { id: string, color: string }) => (
 
 // --- MASTER COMPONENT (V4) ---
 export default function ThematicEntrance({ pillarId, color }: { pillarId: string, color: string }) {
-    const [isVisible, setIsVisible] = useState(true);
+    const [isVisible, setIsVisible] = useState(false);
 
     useEffect(() => {
         setIsVisible(true);

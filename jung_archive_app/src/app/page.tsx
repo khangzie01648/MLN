@@ -9,9 +9,9 @@ import { Playfair_Display, Montserrat } from "next/font/google";
 import CustomCursor from "../components/ui/CustomCursor";
 import { motion } from "framer-motion";
 
-import WarpTransition from "../components/ui/WarpTransition";
+import WarpTransition from "../components/ui/effects/WarpTransition";
 
-const CosmicMindScene = dynamic(() => import("../components/3d/CosmicMindScene"), {
+const CosmicMindScene = dynamic(() => import("../components/3d/scenes/CosmicMindScene"), {
   ssr: false,
   loading: () => <div className="w-full h-full bg-black" />,
 });

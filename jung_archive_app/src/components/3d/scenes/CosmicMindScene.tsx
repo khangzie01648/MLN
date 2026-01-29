@@ -5,7 +5,7 @@ import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { EffectComposer, Bloom, Noise, ChromaticAberration } from "@react-three/postprocessing";
 import { Stars } from "@react-three/drei";
-import GalaxyBackground from "./GalaxyBackground";
+import GalaxyBackground from "../backgrounds/GalaxyBackground";
 
 /**
  * --- THE PSYCHE CORE SHADER ---

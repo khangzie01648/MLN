@@ -6,7 +6,7 @@ import { PerspectiveCamera, Text, Sparkles, Billboard, Float, Torus, Stars } fro
 import { EffectComposer, Bloom, Vignette, ChromaticAberration, Glitch } from '@react-three/postprocessing';
 import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
-import GalaxyBackground from './GalaxyBackground';
+import GalaxyBackground from '../backgrounds/GalaxyBackground';
 
 // --- HIGH-FIDELITY TRANSITION COMPONENTS ---
 

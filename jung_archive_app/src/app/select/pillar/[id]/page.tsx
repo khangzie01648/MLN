@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import { getPillarById, getPillars } from '@/lib/content-config';
-import PillarPageTemplate from '@/components/PillarPageTemplate';
+import PillarPageTemplate from '@/components/templates/PillarPageTemplate';
 import { PILLAR_OBJECT_MAP, PILLAR_SCALE_MAP } from '@/lib/pillar-objects';
 
 interface PillarPageRouteProps {
