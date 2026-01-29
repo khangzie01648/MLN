@@ -1,20 +1,206 @@
 'use client';
-import { useRef, useState, useMemo, Suspense } from 'react';
+import { useRef, useState, useMemo, Suspense, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { Canvas, useFrame } from '@react-three/fiber';
-import { PerspectiveCamera, Text, Sparkles, Billboard, Float, Torus, MeshDistortMaterial, Trail } from '@react-three/drei';
-import { EffectComposer, Bloom, Vignette, ChromaticAberration } from '@react-three/postprocessing';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { PerspectiveCamera, Text, Sparkles, Billboard, Float, Torus, Stars } from '@react-three/drei';
+import { EffectComposer, Bloom, Vignette, ChromaticAberration, Glitch } from '@react-three/postprocessing';
+import { motion, AnimatePresence } from 'framer-motion';
 import * as THREE from 'three';
+import GalaxyBackground from './GalaxyBackground';
 
-// Import all objects
-import Hourglass from './objects/Hourglass';
-import NestedSpheres from './objects/NestedSpheres';
-import FloatingBook from './objects/FloatingBook';
-import AlchemyFlask from './objects/AlchemyFlask';
-import LotusFlower from './objects/LotusFlower';
-import EyeOfHorus from './objects/EyeOfHorus';
-import SacredFlame from './objects/SacredFlame';
+// --- HIGH-FIDELITY TRANSITION COMPONENTS ---
+
+function OrbitTrail() {
+    return (
+        <group>
+            <Torus args={[800, 2, 12, 64]} rotation={[Math.PI / 2, 0, 0]}>
+                <meshBasicMaterial transparent opacity={0} />
+                <Sparkles count={300} scale={[1800, 20, 1800]} size={2} speed={0} color="#ffd700" opacity={0.2} />
+            </Torus>
+        </group>
+    );
+}
+
+function AbyssalTunnel({ isActive, pillar }: { isActive: boolean, pillar: any }) {
+    const groupRef = useRef<THREE.Group>(null);
+    const ringCount = 50;
+    const color = pillar?.color || "#ffd700";
+
+    useFrame((state, delta) => {
+        if (!isActive) return;
+        groupRef.current?.children.forEach((ring: any, i) => {
+            ring.position.z += delta * 7000;
+            if (ring.position.z > 1000) ring.position.z = -ringCount * 200;
+            ring.rotation.z += delta * 0.4 * (i % 2 === 0 ? 1 : -1);
+        });
+    });
+
+    return (
+        <group ref={groupRef} visible={isActive}>
+            {Array.from({ length: ringCount }).map((_, i) => (
+                <mesh key={i} position={[0, 0, -i * 200]}>
+                    <torusGeometry args={[600 + i * 10, 1.5, 8, 48]} />
+                    <meshBasicMaterial color={color} transparent opacity={Math.max(0, 0.4 - (i * 0.008))} wireframe />
+                </mesh>
+            ))}
+        </group>
+    );
+}
+
+function TeaserMontage({ isActive, pillar }: { isActive: boolean, pillar: any }) {
+    const groupRef = useRef<THREE.Group>(null);
+    const elements = useMemo(() => {
+        if (pillar) return pillar.teaserKeywords || [];
+        return ["Collective Unconscious", "The Self", "Archetypes", "Alchemical Soul", "Mundus Imaginalis", "Archive"];
+    }, [pillar]);
+
+    useFrame((state, delta) => {
+        if (!isActive || !groupRef.current) return;
+        groupRef.current.children.forEach((child: any, i: number) => {
+            child.position.z += delta * 15000;
+            child.rotation.y += delta * 1.5;
+            if (child.position.z > 3000) child.position.z = -8000;
+        });
+    });
+
+    const wordData = useMemo(() => {
+        return elements.map((word: string, i: number) => ({
+            word,
+            posX: (i % 2 === 0 ? 1 : -1) * 800,
+            posY: (Math.random() - 0.5) * 600,
+            posZ: -i * 1500 - 2000
+        }));
+    }, [elements]);
+
+    return (
+        <group ref={groupRef} visible={isActive}>
+            {wordData.map((data: { word: string; posX: number; posY: number; posZ: number }, i: number) => (
+                <group key={i} position={[data.posX, data.posY, data.posZ]}>
+                    <Billboard>
+                        <Text fontSize={45} color={pillar ? pillar.color : "#ffd700"} letterSpacing={0.2}>
+                            {data.word.toUpperCase()}
+                            <meshBasicMaterial transparent opacity={0.7} toneMapped={false} />
+                        </Text>
+                    </Billboard>
+                </group>
+            ))}
+        </group>
+    );
+}
+
+function LightStreaks({ isActive, color }: { isActive: boolean, color: string }) {
+    const ref = useRef<THREE.Group>(null);
+    const count = 200;
+    const lines = useMemo(() => {
+        return Array.from({ length: count }).map(() => ({
+            pos: [(Math.random() - 0.5) * 5000, (Math.random() - 0.5) * 5000, -Math.random() * 12000],
+            len: Math.random() * 2000 + 500,
+            speed: Math.random() * 8000 + 4000
+        }));
+    }, []);
+
+    useFrame((state, delta) => {
+        if (!isActive || !ref.current) return;
+        ref.current.children.forEach((line: any, i) => {
+            line.position.z += delta * lines[i].speed;
+            if (line.position.z > 4000) line.position.z = -8000;
+        });
+    });
+
+    return (
+        <group ref={ref} visible={isActive}>
+            {lines.map((l, i) => (
+                <mesh key={i} position={l.pos as any}>
+                    <boxGeometry args={[4, 4, l.len]} />
+                    <meshBasicMaterial color={color} transparent opacity={0.6} toneMapped={false} />
+                </mesh>
+            ))}
+        </group>
+    );
+}
+
+function JumpParticles({ isActive, color, pillar }: { isActive: boolean, color: string, pillar: any }) {
+    const coreColor = "#ffffff";
+    const finalColor = pillar ? color : coreColor;
+    return (
+        <group visible={isActive}>
+            <Sparkles count={pillar ? 500 : 1000} scale={5000} size={pillar ? 20 : 40} speed={0} color={finalColor} />
+            <LightStreaks isActive={isActive} color={finalColor} />
+            <TeaserMontage isActive={isActive} pillar={pillar} />
+        </group>
+    );
+}
+
 // --- VISUALS: ULTRA-DETAILED ARCHETYPES (MASTERPIECE QUALITY) ---
+
+// 0. STAR WARP FIELD: High-End Particle System
+const StarWarpField = ({ active, factor }: { active: boolean, factor: number }) => {
+    const pointsRef = useRef<THREE.Points>(null);
+    const count = 5000;
+
+    const [positions, sizes] = useMemo(() => {
+        const positions = new Float32Array(count * 3);
+        const sizes = new Float32Array(count);
+        for (let i = 0; i < count; i++) {
+            positions[i * 3] = (Math.random() - 0.5) * 4000;
+            positions[i * 3 + 1] = (Math.random() - 0.5) * 4000;
+            positions[i * 3 + 2] = (Math.random() - 1.0) * 8000;
+            sizes[i] = Math.random() * 2;
+        }
+        return [positions, sizes];
+    }, []);
+
+    useFrame((state, delta) => {
+        if (!pointsRef.current) return;
+        const attr = pointsRef.current.geometry.attributes.position;
+        for (let i = 0; i < count; i++) {
+            // Move towards camera
+            attr.array[i * 3 + 2] += delta * 2000 * (active ? factor : 1);
+            // Reset if behind camera
+            if (attr.array[i * 3 + 2] > 2000) {
+                attr.array[i * 3 + 2] = -6000;
+            }
+        }
+        attr.needsUpdate = true;
+    });
+
+    return (
+        <points ref={pointsRef}>
+            <bufferGeometry>
+                <bufferAttribute
+                    attach={"attributes-position" as any}
+                    args={[positions, 3]}
+                />
+                <bufferAttribute
+                    attach={"attributes-size" as any}
+                    args={[sizes, 1]}
+                />
+            </bufferGeometry>
+            <pointsMaterial size={4} transparent opacity={0.6} color="#ffffff" sizeAttenuation />
+        </points>
+    );
+};
+
+// 0.5 HOLOGRAPHIC PLANE: Memory Artifact
+const HolographicPlane = ({ name, isHovered }: { name: string, isHovered: boolean }) => {
+    return (
+        <group>
+            <Billboard>
+                <Text
+                    fontSize={22}
+                    color="#ffffff"
+                    fillOpacity={isHovered ? 1.0 : 0.65}
+                    anchorX="center"
+                    anchorY="middle"
+                    letterSpacing={0.4}
+                    fontWeight="normal"
+                >
+                    {name}
+                </Text>
+            </Billboard>
+        </group>
+    );
+};
 
 // 1. SPIRIT: The Hypercube Tesseract (Dimensional Transcendence)
 const SpiritGlitch = ({ isHovered }: any) => {
@@ -25,17 +211,17 @@ const SpiritGlitch = ({ isHovered }: any) => {
     useFrame((state) => {
         const t = state.clock.elapsedTime;
         if (outerRef.current) {
-            outerRef.current.rotation.x = t * 0.1;
-            outerRef.current.rotation.y = t * 0.15;
-            if (isHovered) outerRef.current.scale.setScalar(1.1);
+            outerRef.current.rotation.x = t * 0.3;
+            outerRef.current.rotation.y = t * 0.45;
+            outerRef.current.position.y = Math.sin(t * 1.5) * 1.5;
         }
         if (midRef.current) {
-            midRef.current.rotation.x = -t * 0.2;
-            midRef.current.rotation.z = t * 0.1;
+            midRef.current.rotation.x = -t * 0.6;
+            midRef.current.rotation.z = t * 0.3;
         }
         if (innerRef.current) {
-            innerRef.current.rotation.y = t * 0.5;
-            innerRef.current.rotation.x = Math.sin(t) * 0.2;
+            innerRef.current.rotation.y = t * 1.5;
+            innerRef.current.rotation.x = Math.sin(t * 2) * 0.4;
         }
     });
 
@@ -45,9 +231,9 @@ const SpiritGlitch = ({ isHovered }: any) => {
             <group ref={outerRef}>
                 <mesh>
                     <boxGeometry args={[14, 14, 14, 2, 2, 2]} />
-                    <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.3} wireframe strokeWidth={1} />
+                    <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.3} wireframe />
                 </mesh>
-                <Sparkles count={20} scale={20} size={1.5} color="#ffffff" opacity={0.4} />
+                <Sparkles count={20} scale={20} size={1.5} speed={0} color="#ffffff" opacity={0.4} />
             </group>
 
             {/* Layer 2: Dimensional Shift */}
@@ -77,12 +263,13 @@ const SpiritGlitch = ({ isHovered }: any) => {
 const Runestone = ({ isHovered }: any) => {
     const rings = useRef<THREE.Group>(null);
     useFrame((state) => {
+        const t = state.clock.elapsedTime;
         if (rings.current) {
             rings.current.children.forEach((r, i) => {
-                r.rotation.z = state.clock.elapsedTime * (0.1 * (i + 1));
-                r.rotation.x = Math.sin(state.clock.elapsedTime * 0.5 + i) * 0.2;
+                r.rotation.z = t * (0.4 * (i + 1));
+                r.rotation.x = Math.sin(t * 0.8 + i) * 0.3;
             });
-            if (isHovered) rings.current.scale.setScalar(1.2);
+            rings.current.position.y = Math.cos(t * 1.2) * 2;
         }
     });
 
@@ -131,9 +318,10 @@ const Runestone = ({ isHovered }: any) => {
 const CrystalArbor = ({ isHovered }: any) => {
     const group = useRef<THREE.Group>(null);
     useFrame((state) => {
+        const t = state.clock.elapsedTime;
         if (group.current) {
-            group.current.rotation.y = Math.sin(state.clock.elapsedTime * 0.1) * 0.1;
-            if (isHovered) group.current.rotation.y += 0.01;
+            group.current.rotation.y = t * 0.2;
+            group.current.position.y = -10 + Math.sin(t * 0.8) * 3;
         }
     });
 
@@ -172,7 +360,7 @@ const CrystalArbor = ({ isHovered }: any) => {
                     <meshStandardMaterial color="#ccff00" emissive="#aaff00" emissiveIntensity={0.8} wireframe />
                 </mesh>
             ))}
-            <Sparkles count={30} scale={20} size={2} color="#ccff00" position={[0, 15, 0]} />
+            <Sparkles count={30} scale={20} size={2} speed={0} color="#ccff00" position={[0, 15, 0]} />
         </group>
     );
 };
@@ -183,11 +371,12 @@ const CosmosSingularity = ({ isHovered }: any) => {
     useFrame((state) => {
         const t = state.clock.elapsedTime;
         if (rings.current) {
-            rings.current.children[0].rotation.x = t * 0.2;
-            rings.current.children[1].rotation.y = t * 0.3;
-            rings.current.children[2].rotation.z = t * 0.1;
-            rings.current.children[3].rotation.x = t * 0.4;
-            rings.current.children[3].rotation.y = t * 0.4;
+            rings.current.children[0].rotation.x = t * 0.6;
+            rings.current.children[1].rotation.y = t * 1.0;
+            rings.current.children[2].rotation.z = t * 0.4;
+            rings.current.children[3].rotation.x = t * 1.2;
+            rings.current.children[3].rotation.y = t * 1.2;
+            rings.current.position.y = Math.sin(t * 0.5) * 5;
         }
     });
 
@@ -217,7 +406,7 @@ const CosmosSingularity = ({ isHovered }: any) => {
                     <meshStandardMaterial color="#4488ff" emissive="#4488ff" emissiveIntensity={1.2} />
                 </mesh>
             </group>
-            <Sparkles count={50} scale={25} size={1} color="#ffffff" />
+            <Sparkles count={50} scale={25} size={1} speed={0} color="#ffffff" />
         </group>
     );
 };
@@ -226,9 +415,10 @@ const CosmosSingularity = ({ isHovered }: any) => {
 const SynapticGrid = ({ isHovered }: any) => {
     const group = useRef<THREE.Group>(null);
     useFrame((state) => {
+        const t = state.clock.elapsedTime;
         if (group.current) {
-            group.current.rotation.y = state.clock.elapsedTime * 0.1;
-            if (isHovered) group.current.rotation.x += 0.01;
+            group.current.rotation.y = t * 0.4;
+            group.current.rotation.z = Math.sin(t * 0.5) * 0.2;
         }
     });
 
@@ -255,7 +445,7 @@ const SynapticGrid = ({ isHovered }: any) => {
                     </group>
                 )
             })}
-            <Sparkles count={40} scale={22} size={2} color="#00aaff" />
+            <Sparkles count={40} scale={22} size={2} speed={0} color="#00aaff" />
         </group>
     );
 };
@@ -264,7 +454,11 @@ const SynapticGrid = ({ isHovered }: any) => {
 const BioFragment = ({ isHovered }: any) => {
     const group = useRef<THREE.Group>(null);
     useFrame((state) => {
-        if (group.current) group.current.rotation.y = state.clock.elapsedTime * 0.5;
+        const t = state.clock.elapsedTime;
+        if (group.current) {
+            group.current.rotation.y = t * 1.2;
+            group.current.position.y = Math.sin(t * 1.1) * 4;
+        }
     });
 
     return (
@@ -303,9 +497,9 @@ const LogicCore = ({ isHovered }: any) => {
 
     useFrame((state) => {
         const t = state.clock.elapsedTime;
-        if (outer.current) { outer.current.rotation.x = t * 0.1; outer.current.rotation.y = t * 0.1; }
-        if (mid.current) { mid.current.rotation.x = -t * 0.2; mid.current.rotation.z = t * 0.2; }
-        if (inner.current) { inner.current.rotation.y = t * 0.5; }
+        if (outer.current) { outer.current.rotation.x = t * 0.4; outer.current.rotation.y = t * 0.4; }
+        if (mid.current) { mid.current.rotation.x = -t * 0.8; mid.current.rotation.z = t * 0.8; }
+        if (inner.current) { inner.current.rotation.y = t * 2.0; }
     });
 
     return (
@@ -313,7 +507,7 @@ const LogicCore = ({ isHovered }: any) => {
             {/* Outer Cube */}
             <mesh ref={outer}>
                 <boxGeometry args={[14, 14, 14]} />
-                <meshStandardMaterial color="#00ffff" emissive="#00ffff" emissiveIntensity={0.5} wireframe strokeWidth={2} />
+                <meshStandardMaterial color="#00ffff" emissive="#00ffff" emissiveIntensity={0.5} wireframe />
             </mesh>
             {/* Star Tetrahedron (Merkaba-ish) */}
             <group ref={mid}>
@@ -339,10 +533,12 @@ const LogicCore = ({ isHovered }: any) => {
 const RedBookLegacy = ({ isHovered }: any) => {
     const pages = useRef<THREE.Group>(null);
     useFrame((state) => {
+        const t = state.clock.elapsedTime;
         if (pages.current) {
             pages.current.children.forEach((p, i) => {
-                p.rotation.y = (Math.PI / 12 * i) + Math.sin(state.clock.elapsedTime * 2 + i) * 0.05;
+                p.rotation.y = (Math.PI / 12 * i) + Math.sin(t * 3.5 + i) * 0.2;
             });
+            pages.current.position.y = Math.sin(t * 0.9) * 2;
         }
     });
 
@@ -354,8 +550,8 @@ const RedBookLegacy = ({ isHovered }: any) => {
                 <meshStandardMaterial color="#ff0000" emissive="#770000" emissiveIntensity={0.5} />
             </mesh>
             {/* Spine */}
-            <mesh position={[-6.5, 0, 11]}>
-                <cylinderGeometry args={[1.5, 1.5, 32, 16, 1, false, 0, Math.PI]} rotation={[0, 0, Math.PI / 2]} />
+            <mesh position={[-6.5, 0, 11]} rotation={[0, 0, Math.PI / 2]}>
+                <cylinderGeometry args={[1.5, 1.5, 32, 16, 1, false, 0, Math.PI]} />
                 <meshStandardMaterial color="#ff0000" emissive="#770000" emissiveIntensity={0.6} />
             </mesh>
             {/* Pages */}
@@ -379,8 +575,10 @@ const RedBookLegacy = ({ isHovered }: any) => {
 const AlchemicalCrucible = ({ isHovered }: any) => {
     const group = useRef<THREE.Group>(null);
     useFrame((state) => {
+        const t = state.clock.elapsedTime;
         if (group.current) {
-            group.current.rotation.z = state.clock.elapsedTime * 0.1;
+            group.current.rotation.z = t * 0.6;
+            group.current.rotation.x = Math.sin(t * 0.4) * 0.2;
         }
     });
 
@@ -422,19 +620,19 @@ const MandalaLotus = ({ isHovered }: any) => {
     const layer2 = useRef<THREE.Group>(null);
     const layer3 = useRef<THREE.Group>(null);
 
-    useFrame((state) => {
+    useFrame((state, delta) => {
         const t = state.clock.elapsedTime;
-        if (layer1.current) layer1.current.rotation.z = t * 0.05;
-        if (layer2.current) layer2.current.rotation.z = -t * 0.08;
-        if (layer3.current) layer3.current.rotation.z = t * 0.1;
-
-        if (isHovered) {
-            if (layer1.current) layer1.current.rotation.x = -0.5;
-            if (layer2.current) layer2.current.rotation.x = -0.3;
-        } else {
-            if (layer1.current) layer1.current.rotation.x = 0;
-            if (layer2.current) layer2.current.rotation.x = 0;
+        if (layer1.current) layer1.current.rotation.z = t * 0.4;
+        if (layer2.current) layer2.current.rotation.z = -t * 0.6;
+        if (layer3.current) {
+            layer3.current.rotation.z = t * 1.2;
+            layer3.current.position.y = Math.sin(t * 1.5) * 3;
         }
+
+        const targetX1 = isHovered ? -0.5 : 0;
+        const targetX2 = isHovered ? -0.3 : 0;
+        if (layer1.current) layer1.current.rotation.x = THREE.MathUtils.damp(layer1.current.rotation.x, targetX1, 4, delta);
+        if (layer2.current) layer2.current.rotation.x = THREE.MathUtils.damp(layer2.current.rotation.x, targetX2, 4, delta);
     });
 
     return (
@@ -469,132 +667,227 @@ const MandalaLotus = ({ isHovered }: any) => {
 };
 
 const PILLARS = [
-    { id: 'spirit', name: 'SPIRIT', Object: SpiritGlitch, baseScale: 1.6 },
-    { id: 'symbols', name: 'SYMBOLS', Object: Runestone, baseScale: 1.5 },
-    { id: 'legacy', name: 'LEGACY', Object: CrystalArbor, baseScale: 1.4 },
-    { id: 'cosmos', name: 'COSMOS', Object: CosmosSingularity, baseScale: 1.1 },
-    { id: 'encounters', name: 'ENCOUNTERS', Object: SynapticGrid, baseScale: 1.3 },
-    { id: 'biography', name: 'BIOGRAPHY', Object: BioFragment, baseScale: 1.2 },
-    { id: 'concepts', name: 'CONCEPTS', Object: LogicCore, baseScale: 1.4 },
-    { id: 'red_book', name: 'RED BOOK', Object: RedBookLegacy, baseScale: 1.7 },
-    { id: 'alchemy', name: 'ALCHEMY', Object: AlchemicalCrucible, baseScale: 1.4 },
-    { id: 'practice', name: 'PRACTICE', Object: MandalaLotus, baseScale: 2.0 },
+    {
+        id: 'biography', name: 'BIOGRAPHY', Object: BioFragment, baseScale: 1.8, color: "#bb00ff",
+        transitionMsg: "CHƯƠNG I: CUỘC ĐỜI & DI SẢN", transitionColor: "#0a0015",
+        teaserKeywords: ["Zurich 1875", "Tháp Bollingen", "Ký ức", "Toni Wolff", "Emma Jung"]
+    },
+    {
+        id: 'concepts', name: 'CONCEPTS', Object: LogicCore, baseScale: 2.1, color: "#00ffff",
+        transitionMsg: "CHƯƠNG II: CẤU TRÚC TÂM LÝ", transitionColor: "#000808",
+        teaserKeywords: ["Archetypes", "The Shadow", "Persona", "Anima", "Animus"]
+    },
+    {
+        id: 'red_book', name: 'RED BOOK', Object: RedBookLegacy, baseScale: 1.7, color: "#ff0000",
+        transitionMsg: "CHƯƠNG III: KHẢI HUYỀN NỘI TÂM", transitionColor: "#150000",
+        teaserKeywords: ["Liber Novus", "Philemon", "Desert", "Dialogue", "Red Rite"]
+    },
+    {
+        id: 'alchemy', name: 'ALCHEMY', Object: AlchemicalCrucible, baseScale: 1.8, color: "#00ff44",
+        transitionMsg: "CHƯƠNG IV: GIẢ KIM THUẬT", transitionColor: "#000a03",
+        teaserKeywords: ["Solutio", "Lapis", "Lead to Gold", "Union", "Spirit Vessel"]
+    },
+    {
+        id: 'practice', name: 'PRACTICE', Object: MandalaLotus, baseScale: 2.3, color: "#ff00ff",
+        transitionMsg: "CHƯƠNG V: PHƯƠNG PHÁP LUẬN", transitionColor: "#0a000a",
+        teaserKeywords: ["Active Imagination", "Dream Analysis", "Mandala", "Incantations"]
+    },
+    {
+        id: 'symbols', name: 'SYMBOLS', Object: Runestone, baseScale: 1.4, color: "#ffd700",
+        transitionMsg: "CHƯƠNG VI: BIỂU TƯỢNG HỌC", transitionColor: "#0a0800",
+        teaserKeywords: ["Ouroboros", "The Circle", "Cross", "Runes", "Sacred Geometry"]
+    },
+    {
+        id: 'spirit', name: 'SPIRIT', Object: SpiritGlitch, baseScale: 2.2, color: "#ffffff",
+        transitionMsg: "CHƯƠNG VII: CHIỀU KÍCH TÂM LINH", transitionColor: "#080808",
+        teaserKeywords: ["Collective Unconscious", "Synchronicity", "The Self", "Abundance"]
+    },
+    {
+        id: 'legacy', name: 'LEGACY', Object: CrystalArbor, baseScale: 1.2, color: "#aaff00",
+        transitionMsg: "CHƯƠNG VIII: TIẾP NỐI THẾ HỆ", transitionColor: "#050a00",
+        teaserKeywords: ["Analytical Psychology", "MBTI", "Joseph Campbell", "Roots"]
+    },
+    {
+        id: 'cosmos', name: 'COSMOS', Object: CosmosSingularity, baseScale: 1.3, color: "#ffffff",
+        transitionMsg: "CHƯƠNG IX: VŨ TRỤ QUAN", transitionColor: "#000000",
+        teaserKeywords: ["Unus Mundus", "Psychoid", "Event Horizon", "Singularity"]
+    },
+    {
+        id: 'encounters', name: 'ENCOUNTERS', Object: SynapticGrid, baseScale: 1.6, color: "#0044ff",
+        transitionMsg: "CHƯƠNG X: NHỮNG CUỘC GẶP GỠ", transitionColor: "#00040a",
+        teaserKeywords: ["Sigmund Freud", "Wolfgang Pauli", "Friendship", "Fate"]
+    },
 ];
 
-function OrbitalNucleus({ pillar, index, onHover, onLeave, onClick, isHovered, sharedAngleRef }: any) {
+function OrbitalNucleus({ pillar, index, onHover, onLeave, onClick, isHovered, sharedAngleRef, isDiving, isSelected }: any) {
     const groupRef = useRef<THREE.Group>(null);
     const labelRef = useRef<THREE.Group>(null);
-    // ELEGANT RADIUS: Balanced and spacious
-    const orbitRadius = 850;
+    const orbitRadius = 800; // Unified Radius
 
     useFrame((state, delta) => {
         if (groupRef.current) {
             const angleOffset = (index * Math.PI * 2) / 10;
             const angle = sharedAngleRef.current + angleOffset;
 
-            // CINEMATIC X-Z PLANE (ALCHEMICAL DISK)
+            // X-Z PLANE ALIGNMENT
             const targetX = Math.cos(angle) * orbitRadius;
             const targetZ = Math.sin(angle) * orbitRadius;
             groupRef.current.position.set(targetX, 0, targetZ);
 
-            // High-End Perspective Compensation
+            // Perspective Compensation
             const worldPos = new THREE.Vector3();
             groupRef.current.getWorldPosition(worldPos);
             const dist = state.camera.position.distanceTo(worldPos);
             const scaleFactor = dist / 2800;
 
-            // ARTIFACT SCALING: High-End Perspective Compensation
+            // Artifact Scaling - MATCHING THE SUBSTANTIAL FEEL OF RED BOOK
             const targetScale = (isHovered ? 2.6 : 1.5) * (pillar.baseScale || 1.0) * scaleFactor;
             groupRef.current.scale.setScalar(THREE.MathUtils.damp(groupRef.current.scale.x, targetScale, 6, delta));
 
-            // PERFECT UNIFORM LABEL SCALING: 
-            // We cancel out the parent's scale and distance to make text exactly equal on screen
-            // PERFECT UNIFORM LABEL ALIGNMENT:
-            // We ensure both the size AND the gap from the artifact are mathematically identical on screen.
+            // Fade Logic for Transition
+            if (isDiving) {
+                const opacityTarget = isSelected ? 1.0 : 0.0;
+                groupRef.current.visible = isSelected || (opacityTarget > 0);
+                // Note: We'd need material access for smooth fade, but toggle visible is a safe fallback
+            }
+
             if (labelRef.current) {
                 const currentParentScale = groupRef.current.scale.x;
-
-                // Fixed Visual Gap: Divider by parent scale cancels out artifact-specific size
-                // (dist/2800) keeps the gap feeling constant in 3D perspective
-                // Fixed Visual Gap: Adjusted for 20% larger font
                 const visualGapFactor = 145;
                 const adaptivePush = (visualGapFactor * (dist / 2800)) / currentParentScale;
                 labelRef.current.position.set(Math.cos(angle) * adaptivePush, 0, Math.sin(angle) * adaptivePush);
 
-                // UNIFORM LABEL SCALING: Increased by 20% (dist / 2800)
                 const baseOnScreenScale = (dist / 2800);
                 const hoverFactor = isHovered ? 1.25 : 1.0;
                 labelRef.current.scale.setScalar((baseOnScreenScale / currentParentScale) * hoverFactor);
+
+                // Hide labels during dive
+                if (isDiving) labelRef.current.visible = false;
             }
         }
     });
 
-
     return (
         <group
             ref={groupRef}
+            visible={isDiving ? isSelected : true}
             onPointerOver={(e) => {
+                if (isDiving) return;
                 e.stopPropagation();
                 document.body.style.cursor = 'pointer';
                 onHover();
             }}
             onPointerOut={() => {
+                if (isDiving) return;
                 document.body.style.cursor = 'default';
                 onLeave();
             }}
-            onClick={() => onClick(pillar)}
+            onClick={() => {
+                if (!isDiving) onClick(pillar);
+            }}
         >
-            <mesh visible={false}>
-                <sphereGeometry args={[60, 16, 16]} />
-                <meshBasicMaterial transparent opacity={0} />
-            </mesh>
-
-            {/* Sacred Rotating Halos */}
-            <group rotation={[Math.PI / 4, index, 0]}>
-                <Torus args={[35, 0.2, 16, 100]}>
-                    <meshStandardMaterial color="#ffd700" emissive="#ffaa00" emissiveIntensity={isHovered ? 12 : 2} transparent opacity={0.3} />
-                </Torus>
-            </group>
-
-            {/* Archetpyal Artifact */}
             <pillar.Object isHovered={isHovered} />
-
-            {/* Alchemical Glow Core */}
-            <mesh>
-                <sphereGeometry args={[10, 16, 16]} />
-                <MeshDistortMaterial
-                    color="#ffffff"
-                    emissive="#ffd700"
-                    emissiveIntensity={isHovered ? 15 : 5}
-                    distort={0.3}
-                    speed={1.5}
-                    toneMapped={false}
-                />
-            </mesh>
-
-            {/* Dynamic Radial Label */}
             <group ref={labelRef}>
-                <Billboard>
-                    <Text
-                        fontSize={22}
-                        color="#ffffff"
-                        fillOpacity={isHovered ? 1.0 : 0.65}
-                        anchorX="center"
-                        anchorY="middle"
-                        letterSpacing={0.4}
-                        fontWeight="normal"
-                        outlineWidth={0.4}
-                        outlineColor="#000000"
-                    >
-                        {pillar.name}
-                    </Text>
-                </Billboard>
+                <HolographicPlane name={pillar.name} isHovered={isHovered} />
             </group>
         </group>
     );
 }
 
-function SacredMandala() {
+function MandalaCamera({ isDiving, selectedPillarIndex, sharedAngleRef, transitionStage }: any) {
+    const { camera } = useThree();
+    const orbitRadius = 800;
+    const shakeRef = useRef(new THREE.Vector3());
+    const transitionStartRef = useRef(0);
+    const lastDivingRef = useRef(false);
+
+    useFrame((state, delta) => {
+        const t = state.clock.elapsedTime;
+
+        if (isDiving && !lastDivingRef.current) {
+            transitionStartRef.current = t;
+        }
+        lastDivingRef.current = isDiving;
+
+        const relT = isDiving ? t - transitionStartRef.current : 0;
+
+        if (isDiving && selectedPillarIndex !== null) {
+            const angleOffset = (selectedPillarIndex * Math.PI * 2) / 10;
+            const angle = sharedAngleRef.current + angleOffset;
+            const targetX = Math.cos(angle) * orbitRadius;
+            const targetZ = Math.sin(angle) * orbitRadius;
+
+            // 8-SECOND PILLAR CHOREOGRAPHY
+            if (relT < 2.0) {
+                const progress = relT / 2.0;
+                const tilt = Math.sin(progress * Math.PI) * 0.2;
+                camera.rotation.z = THREE.MathUtils.lerp(camera.rotation.z, tilt, 0.05);
+                const pull = THREE.MathUtils.lerp(1600, 800, progress);
+                camera.position.lerp(new THREE.Vector3(targetX * (1 - progress / 2), pull, targetZ * (1 - progress / 2)), 0.05);
+                camera.lookAt(0, 0, 0);
+            }
+            else if (relT < 6.5) {
+                const progress = (relT - 2.0) / 4.5;
+                const zoomDist = THREE.MathUtils.lerp(800, -2000, Math.pow(progress, 2.5));
+                const camX = Math.cos(angle) * (orbitRadius - zoomDist);
+                const camZ = Math.sin(angle) * (orbitRadius - zoomDist);
+                camera.position.set(camX, 0, camZ);
+                camera.lookAt(0, 0, 0);
+                (camera as THREE.PerspectiveCamera).fov = THREE.MathUtils.lerp(35, 120, progress);
+            }
+            else {
+                const progress = Math.min(1, (relT - 6.5) / 2.0);
+                const terminalRush = THREE.MathUtils.lerp(-2000, -12000, Math.pow(progress, 4));
+                camera.position.z += (terminalRush * delta);
+                (camera as THREE.PerspectiveCamera).fov = THREE.MathUtils.lerp(120, 175, progress);
+            }
+            camera.updateProjectionMatrix();
+
+        } else if (isDiving && selectedPillarIndex === null) {
+            // UNIQUE CORE DIVE: TOP-DOWN SPIRAL
+            const pCam = camera as THREE.PerspectiveCamera;
+            if (relT < 2.5) {
+                // PHASE 1: VERTICAL ASCENT (Looking down at the throne)
+                const progress = relT / 2.5;
+                const height = THREE.MathUtils.lerp(1600, 3500, Math.pow(progress, 1.5));
+                camera.position.lerp(new THREE.Vector3(0, height, 500), 0.05);
+                camera.lookAt(0, 0, 0);
+                camera.rotation.z += delta * (progress * 2); // Spinning ascent
+            }
+            else if (relT < 6.8) {
+                // PHASE 2: SPIRAL DESCENT INTO THE UNCONSCIOUS
+                const progress = (relT - 2.5) / 4.3;
+                const radius = THREE.MathUtils.lerp(500, 0, progress);
+                const height = THREE.MathUtils.lerp(3500, -500, Math.pow(progress, 2));
+                const spin = t * (5 + progress * 15);
+
+                camera.position.set(Math.cos(spin) * radius, height, Math.sin(spin) * radius);
+                camera.lookAt(0, 0, 0);
+                pCam.fov = THREE.MathUtils.lerp(35, 140, progress);
+            }
+            else {
+                // PHASE 3: THE WHITE-OUT (Ego Dissolution)
+                const progress = Math.min(1, (relT - 6.8) / 1.7);
+                camera.position.y -= delta * 8000;
+                pCam.fov = THREE.MathUtils.lerp(140, 5, progress); // Tunnel vision
+            }
+            camera.updateProjectionMatrix();
+        } else {
+            // IDLE
+            const pCam = camera as THREE.PerspectiveCamera;
+            const defaultPos = new THREE.Vector3(0, 1600, 2600);
+            camera.position.lerp(defaultPos, 0.05);
+            camera.lookAt(0, 0, 0);
+            camera.rotation.z = THREE.MathUtils.lerp(camera.rotation.z, 0, 0.05);
+            pCam.fov = THREE.MathUtils.lerp(pCam.fov, 35, 0.05);
+            camera.updateProjectionMatrix();
+        }
+    });
+
+    return <PerspectiveCamera makeDefault fov={35} far={15000} />;
+}
+
+function SacredMandala({ isDiving, setIsDiving, selectedPillarIndex, setSelectedPillarIndex, transitionStage, setTransitionStage }: any) {
     const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
     const router = useRouter();
     const selfCoreRef = useRef<THREE.Mesh>(null);
@@ -602,33 +895,90 @@ function SacredMandala() {
     const sharedAngleRef = useRef(0);
 
     useFrame((state, delta) => {
-        const time = state.clock.elapsedTime;
-        const speedFactor = hoveredIndex !== null ? 0.04 : 0.8;
-        sharedAngleRef.current += delta * 0.08 * speedFactor;
-
-        state.camera.lookAt(0, 0, 0);
+        // Speed up the orbit significantly
+        const speedFactor = isDiving ? 0.05 : (hoveredIndex !== null ? 0.15 : 1.2);
+        sharedAngleRef.current += delta * 0.2 * speedFactor;
 
         if (selfCoreRef.current) {
-            const pulse = 1.0 + Math.sin(time * 0.4) * 0.05;
-            selfCoreRef.current.scale.setScalar(pulse);
             selfCoreRef.current.rotation.y += delta * 0.2;
         }
         if (ringsRef.current) {
             ringsRef.current.rotation.y += delta * 0.1;
-            ringsRef.current.rotation.x = Math.sin(time * 0.1) * 0.1;
         }
     });
 
+    const triggerDive = (idx: number) => {
+        if (isDiving) return;
+        setIsDiving(true);
+        setSelectedPillarIndex(idx);
+        setTransitionStage('ACTIVATING');
+
+        // EPIC 8-SECOND TIMELINE
+        setTimeout(() => setTransitionStage('HYPERSPACE'), 2000);
+        setTimeout(() => {
+            const pillar = PILLARS[idx];
+            router.push(`/pillar/${pillar.id}`);
+        }, 8500);
+    };
+
+    const triggerCoreDive = () => {
+        if (isDiving) return;
+        setIsDiving(true);
+        setSelectedPillarIndex(null); // No pillar = Core
+        setTransitionStage('ACTIVATING');
+
+        setTimeout(() => setTransitionStage('HYPERSPACE'), 2000);
+        setTimeout(() => router.push('/library'), 8500);
+    };
+
     return (
         <group>
-            {/* Majestic Eagle-Eye Perspective - Absolute Clarity */}
-            <PerspectiveCamera makeDefault position={[0, 1600, 2600]} fov={35} far={12000} />
+            <MandalaCamera
+                isDiving={isDiving}
+                selectedPillarIndex={selectedPillarIndex}
+                sharedAngleRef={sharedAngleRef}
+                transitionStage={transitionStage}
+            />
 
-            <Float speed={0.4} rotationIntensity={0.02} floatIntensity={0.1}>
-                <Sparkles count={800} scale={2500} size={2} speed={0.2} opacity={0.3} color="#ffd700" />
+            <group ref={ringsRef}>
+                <Float speed={isDiving ? 0 : 0.4} rotationIntensity={0.02} floatIntensity={0.1}>
+                    <Torus args={[800, 1.2, 16, 120]} rotation={[Math.PI / 2, 0, 0]}>
+                        <meshBasicMaterial color="#ffd700" transparent opacity={0.15} />
+                    </Torus>
 
+                    <group>
+                        {PILLARS.map((pillar, index) => (
+                            <OrbitalNucleus
+                                key={pillar.id}
+                                pillar={pillar}
+                                index={index}
+                                sharedAngleRef={sharedAngleRef}
+                                onHover={() => setHoveredIndex(index)}
+                                onLeave={() => setHoveredIndex(null)}
+                                onClick={() => triggerDive(index)}
+                                isHovered={hoveredIndex === index}
+                                isDiving={isDiving}
+                                isSelected={selectedPillarIndex === index}
+                            />
+                        ))}
+                    </group>
+                </Float>
+            </group>
+
+            <OrbitTrail />
+            <JumpParticles
+                isActive={transitionStage === 'HYPERSPACE'}
+                color={selectedPillarIndex !== null ? PILLARS[selectedPillarIndex].color : "#ffffff"}
+                pillar={selectedPillarIndex !== null ? PILLARS[selectedPillarIndex] : null}
+            />
+
+            <Float speed={isDiving ? 0 : 0.4} rotationIntensity={0.02} floatIntensity={0.1}>
                 {/* THE SELF - VOLUMETRIC SUPERNOVA */}
-                <group>
+                <group
+                    onClick={(e) => { e.stopPropagation(); triggerCoreDive(); }}
+                    onPointerOver={() => { document.body.style.cursor = 'pointer'; }}
+                    onPointerOut={() => { document.body.style.cursor = 'default'; }}
+                >
                     <mesh ref={selfCoreRef}>
                         <icosahedronGeometry args={[125, 4]} />
                         <meshStandardMaterial
@@ -647,56 +997,83 @@ function SacredMandala() {
                     </mesh>
                     <pointLight intensity={22} color="#ffffff" distance={2500} />
                 </group>
-
-                {/* Expanded Alchemical Guide Ring */}
-                <group ref={ringsRef}>
-                    <Torus args={[880, 0.4, 16, 120]} rotation={[Math.PI / 2, 0, 0]}>
-                        <meshBasicMaterial color="#ffd700" transparent opacity={0.1} />
-                    </Torus>
-                </group>
-
-                {/* 10 Archetypal Pillars */}
-                <group>
-                    {PILLARS.map((pillar, index) => (
-                        <OrbitalNucleus
-                            key={pillar.id}
-                            pillar={pillar}
-                            index={index}
-                            sharedAngleRef={sharedAngleRef}
-                            onHover={() => setHoveredIndex(index)}
-                            onLeave={() => setHoveredIndex(null)}
-                            onClick={(p: any) => router.push(`/pillar/${p.id}`)}
-                            isHovered={hoveredIndex === index}
-                        />
-                    ))}
-                </group>
             </Float>
         </group>
     );
 }
 
 export default function MandalaWithObjects() {
+    const [isDiving, setIsDiving] = useState(false);
+    const [selectedPillarIndex, setSelectedPillarIndex] = useState<number | null>(null);
+    const [transitionStage, setTransitionStage] = useState<'IDLE' | 'ACTIVATING' | 'HYPERSPACE'>('IDLE');
+    const [hasMounted, setHasMounted] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        setHasMounted(true);
+    }, []);
+
+    const glitchDelay = useMemo(() => new THREE.Vector2(0.1, 0.2), []);
+    const glitchDuration = useMemo(() => new THREE.Vector2(0.1, 0.2), []);
+    const glitchStrength = useMemo(() => new THREE.Vector2(0.2, 0.4), []);
+
+    if (!hasMounted) {
+        return <div className="w-full h-screen bg-[#000508]" />;
+    }
+
     return (
-        <div className="relative w-full h-screen overflow-hidden bg-[#000508]">
-            <Canvas shadows={false} gl={{ toneMappingExposure: 2.0 }}>
+        <div className="relative w-full h-screen overflow-hidden bg-[#000508]" suppressHydrationWarning>
+            <Canvas shadows={false} gl={{ toneMappingExposure: 1.0, powerPreference: 'high-performance', antialias: false }}>
                 <color attach="background" args={['#000508']} />
 
                 <ambientLight intensity={1.5} />
                 <pointLight position={[0, 1000, 1000]} intensity={2.0} color="#ffffff" />
 
                 <Suspense fallback={null}>
-                    <SacredMandala />
+                    {/* Simplified Atmospheric Layer */}
+                    <Stars radius={3000} depth={50} count={3000} factor={4} saturation={0} fade speed={0} />
+                    <group scale={40} rotation={[0, 0, 0]}>
+                        <GalaxyBackground isWarping={transitionStage === 'HYPERSPACE'} />
+                    </group>
+
+                    <SacredMandala
+                        isDiving={isDiving} setIsDiving={setIsDiving}
+                        selectedPillarIndex={selectedPillarIndex} setSelectedPillarIndex={setSelectedPillarIndex}
+                        transitionStage={transitionStage} setTransitionStage={setTransitionStage}
+                    />
                 </Suspense>
 
-                <EffectComposer>
-                    <Bloom luminanceThreshold={0.85} intensity={0.45} mipmapBlur />
-                    <ChromaticAberration offset={new THREE.Vector2(0.0002, 0.0002)} />
-                    <Vignette eskil={false} offset={0.3} darkness={1.2} />
-                </EffectComposer>
+                {/* REMOVED EffectComposer to prevent GPU flickering on laggy hardware */}
+                <ambientLight intensity={1.0} />
             </Canvas>
 
+            <AnimatePresence>
+                {isDiving && transitionStage === 'HYPERSPACE' && (
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="absolute inset-0 z-40 pointer-events-none flex items-center justify-center bg-black/40 backdrop-blur-md"
+                    >
+                        <div
+                            className="text-white font-light tracking-[2em] opacity-60 text-xs uppercase px-4 text-center"
+                            style={{ textShadow: `0 0 20px ${selectedPillarIndex !== null ? PILLARS[selectedPillarIndex].color : '#ffffff'}` }}
+                        >
+                            {selectedPillarIndex !== null ? PILLARS[selectedPillarIndex].transitionMsg : "ENTER THE UNCONSCIOUS"}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+
             {/* UI Layer */}
-            <div className="absolute inset-0 pointer-events-none flex flex-col items-center py-12 z-20">
+            <motion.div
+                animate={{
+                    opacity: isDiving ? 0 : 1,
+                    y: isDiving ? -50 : 0
+                }}
+                className="absolute inset-0 pointer-events-none flex flex-col items-center py-12 z-20"
+            >
                 <div className="text-center">
                     <h1 className="text-4xl md:text-7xl font-serif italic tracking-[0.25em] text-[#ffd700] drop-shadow-[0_0_50px_rgba(255,215,0,0.6)]">
                         THE JUNG ARCHIVE
@@ -706,7 +1083,7 @@ export default function MandalaWithObjects() {
                         Mundus Imaginalis • Alchemical Soul
                     </p>
                 </div>
-            </div>
+            </motion.div>
         </div>
     );
 }

@@ -53,56 +53,59 @@ const InstanceVertexShaderAdjusted = `
         float size = aRandom.w;
         if (size < 0.1) size = 1.0; // Safety size
 
-        // WARP LOGIC: Everything speeds up
-        float time = uTime * (1.0 + uWarp * 10.0);
+        // POSITION & MOVEMENT
+        float time = uTime * (1.0 + uWarp * 1.5);
+        float currentAngle = angleInit + time * speed * (20.0 / (radius + 5.0));
         
-        // Differential Rotation
-        float currentAngle = angleInit + time * speed * (15.0 / (radius + 2.0));
-        
-        // Turbulence gets flattened during warp
-        float turbulenceMult = 1.0 - uWarp; 
-        float waveY = sin(currentAngle * 3.0 + time) * (radius * 0.1) * turbulenceMult;
-        float waveZ = cos(currentAngle * 2.0 + time * 1.5) * (radius * 0.1) * turbulenceMult;
+        float turbulence = (1.0 - uWarp) * 0.15;
+        float waveY = sin(currentAngle * 2.0 + time) * radius * turbulence;
+        float waveZ = cos(currentAngle * 3.0 + time * 0.8) * radius * turbulence;
 
-        // Position
         vec3 offsetPos = vec3(
             cos(currentAngle) * radius,
             sin(currentAngle) * radius + waveY,
             waveZ 
         );
 
-        // Billboarding & Stretching
-        // During Warp, we look AT the center, so particles fly AT camera
+        // STRETCHING & UI
         vec3 viewDir = normalize(cameraPosition - offsetPos);
         vec3 right = normalize(cross(viewDir, vec3(0.0, 1.0, 0.0)));
         vec3 up = normalize(cross(right, viewDir));
         
-        // SUPER STRETCH MODE
-        // Base stretch + Warp Stretch
-        float stretch = 1.0 + (50.0 / (radius + 1.0)); 
-        stretch += uWarp * 100.0 * speed; // Infinite streaks
-        
+        float stretch = 1.0 + (uWarp * 150.0 * speed); 
         vec3 localPos = right * position.x * stretch * size 
-                      + up * position.y * size * (1.0 - uWarp * 0.8); // Thin out when stretching
+                      + up * position.y * size * (1.0 - uWarp * 0.9);
         
         vec4 mvPosition = modelViewMatrix * vec4(offsetPos + localPos, 1.0);
         gl_Position = projectionMatrix * mvPosition;
 
-        // WARP COLORS (RAINBOW DOPPLER)
-        vec3 colorCyan = vec3(0.1, 1.0, 1.0);
-        vec3 colorDeep = vec3(0.0, 0.2, 0.8);
-        vec3 colorWarp = vec3(1.0, 0.8, 0.5); // Gold/White hot
+        // MUNDUS IMAGINALIS COLORS - ROYAL DEPTH
+        vec3 colorDeep    = vec3(0.02, 0.01, 0.1);  // The Void
+        vec3 colorIndigo  = vec3(0.05, 0.05, 0.4);  // Unconscious
+        vec3 colorViolet  = vec3(0.4, 0.1, 0.6);   // Insight
+        vec3 colorCyan    = vec3(0.0, 0.8, 1.0);   // Consciousness
+        vec3 colorGold    = vec3(1.0, 0.8, 0.4);   // Alchemical
         
-        float mixVal = smoothstep(0.0, 60.0, radius);
-        vec3 baseColor = mix(colorCyan, colorDeep, mixVal);
+        float distFactor = radius / 100.0;
         
-        // Shift to white/spectrum during warp
-        vColor = mix(baseColor, colorWarp + vec3(sin(radius), cos(radius), 0.5), uWarp) * (3.0 + uWarp * 10.0);
+        // Multilayered Color Mixing
+        vec3 finalColor = mix(colorDeep, colorIndigo, smoothstep(0.0, 0.5, distFactor));
+        finalColor = mix(finalColor, colorViolet, smoothstep(0.3, 0.8, distFactor));
+        finalColor = mix(finalColor, colorCyan, smoothstep(0.7, 1.1, distFactor) * (1.0 - uWarp));
         
-        // Alpha
-        vAlpha = 1.0 - smoothstep(50.0, 80.0, radius); 
-        vAlpha *= smoothstep(5.0, 15.0, radius);
-        vAlpha += uWarp; // Make everything visible during warp
+        float centerGlow = 1.0 - smoothstep(0.0, 45.0, radius);
+        finalColor = mix(finalColor, colorGold, centerGlow * 0.6);
+        
+        // Organic Breathing Effect
+        float breath = sin(uTime * 0.3 + radius * 0.05) * 0.1 + 1.0;
+        vColor = finalColor * breath;
+        vColor = mix(vColor, vec3(1.0), uWarp * 0.5); 
+
+        vAlpha = (1.0 - smoothstep(60.0, 160.0, radius)) * 0.6;
+        vAlpha *= smoothstep(2.0, 20.0, radius);
+        
+        vColor *= (3.5 + uWarp * 2.0); 
+        vAlpha += uWarp * 0.2;
     }
 `;
 
