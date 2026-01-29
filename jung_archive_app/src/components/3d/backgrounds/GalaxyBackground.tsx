@@ -127,8 +127,8 @@ export default function GalaxyBackground({ isWarping }: { isWarping?: boolean })
         const data = new Float32Array(count * 4);
         for (let i = 0; i < count; i++) {
             const i4 = i * 4;
-            let r = Math.random();
-            let radius = 10 + r * r * 70;
+            const r = Math.random();
+            const radius = 10 + r * r * 70;
             const angle = Math.random() * Math.PI * 2;
             const speed = 0.5 + Math.random() * 0.5;
             const size = 0.5 + Math.random() * 2.0;

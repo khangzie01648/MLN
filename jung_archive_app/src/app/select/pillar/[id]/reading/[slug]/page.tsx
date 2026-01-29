@@ -94,7 +94,7 @@ export default async function ReadingPage({ params }: ReadingPageProps) {
                                 <div className="pt-4 border-t border-white/5">
                                     <p className="text-[11px] text-white/30 uppercase tracking-widest mb-2 font-mono">Cách ngôn</p>
                                     <p className="text-xs text-stone-500 leading-relaxed italic">
-                                        "Linh hồn là một mê cung nơi chân lý chỉ xuất hiện trong bóng tối."
+                                        &quot;Linh hồn là một mê cung nơi chân lý chỉ xuất hiện trong bóng tối.&quot;
                                     </p>
                                 </div>
                             </div>

@@ -254,7 +254,7 @@ export function getArticle(pillarId: string, slug: string) {
 
 export function getAllArticleSlugs() {
     const pillars = getPillars();
-    let slugs: { pillar: string; slug: string }[] = [];
+    const slugs: { pillar: string; slug: string }[] = [];
     pillars.forEach(p => {
         p.articles?.forEach(a => {
             slugs.push({ pillar: p.id, slug: a.slug });
@@ -265,7 +265,7 @@ export function getAllArticleSlugs() {
 
 export function getAllArticlesFlat() {
     const pillars = getPillars();
-    let articles: any[] = [];
+    const articles: any[] = [];
     pillars.forEach(p => {
         p.articles?.forEach(a => {
             articles.push({
