@@ -109,7 +109,7 @@ const InstanceVertexShaderAdjusted = `
 
 export default function GalaxyBackground({ isWarping }: { isWarping?: boolean }) {
     const meshRef = useRef<THREE.InstancedMesh>(null);
-    const count = 100000;
+    const count = 40000;
 
     const uniforms = useMemo(() => ({
         uTime: { value: 0 },

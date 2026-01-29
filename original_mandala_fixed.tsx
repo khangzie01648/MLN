@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 import { useRef, useState, useMemo, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { Canvas, useFrame } from '@react-three/fiber';
@@ -253,7 +253,7 @@ export default function MandalaWithObjects() {
                     </h1>
                     <div className="h-[1px] w-64 bg-gradient-to-r from-transparent via-[#ffd700] to-transparent opacity-60 mt-4 mx-auto" />
                     <p className="mt-6 text-sm tracking-[0.8em] text-[#ffaa00] opacity-80 uppercase font-light">
-                        Mundus Imaginalis • Alchemical Soul
+                        Mundus Imaginalis ΓÇó Alchemical Soul
                     </p>
                 </div>
             </div>

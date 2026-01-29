@@ -53,7 +53,7 @@ function ParticleSwarm() {
 export default function ExplosiveBackground() {
     return (
         <div className="fixed inset-0 w-full h-full z-[-1] bg-black">
-            <Canvas camera={{ position: [0, 0, 20], fov: 60 }} gl={{ antialias: false }}>
+            <Canvas dpr={1} camera={{ position: [0, 0, 20], fov: 60 }} gl={{ antialias: false }}>
                 <fog attach="fog" args={['#000', 10, 40]} />
                 <ambientLight intensity={0.5} />
                 <ParticleSwarm />

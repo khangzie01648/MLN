@@ -3,7 +3,7 @@
 import { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
-import { EffectComposer, Bloom, Noise, Vignette, ChromaticAberration } from "@react-three/postprocessing";
+import { EffectComposer, Bloom, Noise, ChromaticAberration } from "@react-three/postprocessing";
 import GalaxyBackground from "./GalaxyBackground";
 
 /**
@@ -59,7 +59,7 @@ function PsycheCore() {
 
     return (
         <mesh ref={meshRef} scale={[3.5, 3.5, 3.5]}>
-            <sphereGeometry args={[1, 128, 128]} />
+            <sphereGeometry args={[1, 32, 32]} />
             <shaderMaterial
                 vertexShader={CoreShader.vertexShader}
                 fragmentShader={CoreShader.fragmentShader}
@@ -107,7 +107,7 @@ export default function CosmicMindScene({ isDiving, paused }: { isDiving: boolea
     return (
         <div className="fixed inset-0 w-full h-full -z-10 bg-black overflow-hidden">
             <Canvas
-                frameloop={paused ? "never" : "always"} // STOP RENDER LOOP WHEN PAUSED
+                frameloop={paused ? "never" : "always"}
                 gl={{
                     powerPreference: "high-performance",
                     antialias: true,
@@ -116,7 +116,7 @@ export default function CosmicMindScene({ isDiving, paused }: { isDiving: boolea
                     toneMapping: THREE.ACESFilmicToneMapping,
                     toneMappingExposure: 1.2
                 }}
-                dpr={[1, 1.5]}
+                dpr={1}
                 camera={{ fov: 75, position: [0, 0, 80] }}
             >
                 <color attach="background" args={["#000000"]} />
@@ -130,9 +130,8 @@ export default function CosmicMindScene({ isDiving, paused }: { isDiving: boolea
                     {/* THE VOLUMETRIC VORTEX */}
                     <GalaxyBackground isWarping={isDiving} />
 
-                    {/* POST PROCESSING STACK (Cinematic) */}
-                    <EffectComposer disableNormalPass>
-                        {/* UNREAL BLOOM - Adjust intensity on Dive */}
+                    {/* POST PROCESSING STACK */}
+                    <EffectComposer enableNormalPass={false}>
                         <Bloom
                             luminanceThreshold={isDiving ? 0.0 : 0.8}
                             mipmapBlur
@@ -140,16 +139,13 @@ export default function CosmicMindScene({ isDiving, paused }: { isDiving: boolea
                             radius={isDiving ? 1.0 : 0.6}
                         />
 
-                        {/* CHROMATIC ABERRATION - Heavy distortion on Dive */}
                         <ChromaticAberration
-                            offset={new THREE.Vector2(isDiving ? 0.02 : 0.003, isDiving ? 0.02 : 0.003)}
+                            offset={[isDiving ? 0.02 : 0.003, isDiving ? 0.02 : 0.003] as any}
                             radialModulation={true}
                             modulationOffset={0.7}
                         />
 
-                        {/* FILM GRAIN - Clean up during warp (optional) or increase storminess */}
                         <Noise opacity={isDiving ? 0.5 : 0.25} />
-
                     </EffectComposer>
 
                 </Suspense>

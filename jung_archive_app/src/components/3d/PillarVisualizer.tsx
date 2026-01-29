@@ -52,7 +52,7 @@ function AlchemyVisual({ color }: { color: string }) {
     return (
         <Float speed={2} rotationIntensity={1} floatIntensity={2}>
             <mesh ref={meshRef} scale={1.5}>
-                <icosahedronGeometry args={[10, 5]} /> {/* High detail geometry */}
+                <icosahedronGeometry args={[10, 3]} /> {/* Reduced detail geometry */}
                 <MeshTransmissionMaterial
                     backside
                     backsideThickness={5}
@@ -159,7 +159,7 @@ function TimeVisual({ color }: { color: string }) {
     return (
         <Float speed={3} rotationIntensity={1.5} floatIntensity={1}>
             <mesh>
-                <torusKnotGeometry args={[8, 2, 128, 32]} />
+                <torusKnotGeometry args={[8, 2, 64, 16]} />
                 <MeshTransmissionMaterial
                     backside
                     thickness={10}
@@ -194,7 +194,7 @@ function SpiritVisual({ color }: { color: string }) {
             </mesh>
             {/* Outer Halo */}
             <mesh scale={1.5}>
-                <sphereGeometry args={[10, 32, 32]} />
+                <sphereGeometry args={[10, 16, 16]} />
                 <meshStandardMaterial color={color} transparent opacity={0.1} side={THREE.BackSide} />
             </mesh>
         </Float>

@@ -93,7 +93,7 @@ export default function NexusLayout({ pillar }: NexusLayoutProps) {
                     >
                         {/* 3D GALAXY CORE */}
                         <div className="absolute inset-0 z-0">
-                            <Canvas dpr={[1, 2]} camera={{ position: [0, 60, 100], fov: 45 }}>
+                            <Canvas dpr={1} camera={{ position: [0, 60, 100], fov: 45 }}>
                                 <GalaxyBackground />
                                 <EffectComposer>
                                     <Bloom intensity={1.5} mipmapBlur />
@@ -160,7 +160,7 @@ export default function NexusLayout({ pillar }: NexusLayoutProps) {
 
             {/* --- PHASE 2: THE IMMERSED ARCHIVE (ULTRA 3D) --- */}
             <div className={`absolute inset-0 z-0 transition-all duration-[4000ms] ${isAuthorized ? 'opacity-100 scale-100' : 'opacity-0 scale-50'}`}>
-                <Canvas gl={{ antialias: true, alpha: true }} dpr={[1, 2]}>
+                <Canvas gl={{ antialias: false, alpha: false, stencil: false, depth: true }} dpr={1}>
                     <PerspectiveCamera makeDefault position={[0, 70, 130]} fov={30} />
                     <Suspense fallback={null}>
                         {/* THE CENTERAL GENERATIVE ARTIFACT */}
