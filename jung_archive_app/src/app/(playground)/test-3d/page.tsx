@@ -1,4 +1,4 @@
-import MandalaScene from '@/components/3d/MandalaScene';
+import MandalaScene from '@/components/3d/scenes/MandalaScene';
 
 export default function Test3DPage() {
     return (

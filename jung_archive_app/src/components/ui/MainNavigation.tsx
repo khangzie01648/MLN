@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { PILLARS, PillarConfig } from "@/lib/content-config";
+import { PILLARS, PillarConfig } from "@/lib/pillar-constants";
 
 interface MainNavigationProps {
     onNavigate?: (path: string) => void;
