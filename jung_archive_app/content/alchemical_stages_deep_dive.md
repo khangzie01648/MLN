@@ -1,3 +1,9 @@
+---
+title: "Các Giai đoạn Giả kim thuật: Chi tiết"
+date: 2026-01-27
+description: "Hành trình chuyển hóa tâm lý thông qua các giai đoạn Nigredo, Albedo, Citrinitas và Rubedo."
+---
+
 # BẢN ĐỒ GIẢ KIM THUẬT CHI TIẾT (ALCHEMICAL STAGES)
 *(Quy trình biến Chì thành Vàng trong Tâm lý)*
 

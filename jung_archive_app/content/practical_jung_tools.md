@@ -1,3 +1,9 @@
+---
+title: "Công cụ Thực hành Tâm lý học Jung"
+date: 2026-01-27
+description: "Tổng hợp các kỹ thuật thực tiễn để áp dụng lý thuyết của Jung vào cuộc sống hàng ngày."
+---
+
 # ỨNG DỤNG TÂM LÝ HỌC JUNG VÀO ĐỜI SỐNG (PRACTICAL JUNG)
 *(Hướng dẫn thực hành chi tiết - Dành cho người mới bắt đầu)*
 

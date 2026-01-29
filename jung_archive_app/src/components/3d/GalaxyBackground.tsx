@@ -79,40 +79,40 @@ const InstanceVertexShaderAdjusted = `
         vec4 mvPosition = modelViewMatrix * vec4(offsetPos + localPos, 1.0);
         gl_Position = projectionMatrix * mvPosition;
 
-        // MUNDUS IMAGINALIS COLORS - ROYAL DEPTH
-        vec3 colorDeep    = vec3(0.02, 0.01, 0.1);  // The Void
-        vec3 colorIndigo  = vec3(0.05, 0.05, 0.4);  // Unconscious
-        vec3 colorViolet  = vec3(0.4, 0.1, 0.6);   // Insight
-        vec3 colorCyan    = vec3(0.0, 0.8, 1.0);   // Consciousness
-        vec3 colorGold    = vec3(1.0, 0.8, 0.4);   // Alchemical
+        // MUNDUS IMAGINALIS COLORS - VIBRANT ALCHEMICAL PALETTE
+        vec3 colorDeep    = vec3(0.01, 0.0, 0.05);   // The Void
+        vec3 colorIndigo  = vec3(0.1, 0.1, 0.8);     // Unconscious
+        vec3 colorViolet  = vec3(0.8, 0.2, 1.0);     // Insight
+        vec3 colorCyan    = vec3(0.0, 1.0, 1.0);     // Consciousness
+        vec3 colorGold    = vec3(1.0, 0.9, 0.3);     // Alchemical Gold
         
-        float distFactor = radius / 100.0;
+        float distFactor = radius / 80.0;
         
-        // Multilayered Color Mixing
-        vec3 finalColor = mix(colorDeep, colorIndigo, smoothstep(0.0, 0.5, distFactor));
-        finalColor = mix(finalColor, colorViolet, smoothstep(0.3, 0.8, distFactor));
-        finalColor = mix(finalColor, colorCyan, smoothstep(0.7, 1.1, distFactor) * (1.0 - uWarp));
+        // Multi-layered Color Mixing - Smoother & Brighter
+        vec3 finalColor = mix(colorDeep, colorIndigo, smoothstep(0.0, 0.4, distFactor));
+        finalColor = mix(finalColor, colorViolet, smoothstep(0.3, 0.7, distFactor));
+        finalColor = mix(finalColor, colorCyan, smoothstep(0.6, 0.9, distFactor) * (1.0 - uWarp));
         
-        float centerGlow = 1.0 - smoothstep(0.0, 45.0, radius);
-        finalColor = mix(finalColor, colorGold, centerGlow * 0.6);
+        float centerGlow = 1.0 - smoothstep(0.0, 30.0, radius);
+        finalColor = mix(finalColor, colorGold, centerGlow * 0.8);
         
         // Organic Breathing Effect
-        float breath = sin(uTime * 0.3 + radius * 0.05) * 0.1 + 1.0;
+        float breath = sin(uTime * 0.5 + radius * 0.1) * 0.2 + 1.0;
         vColor = finalColor * breath;
-        vColor = mix(vColor, vec3(1.0), uWarp * 0.5); 
+        vColor = mix(vColor, vec3(1.0), uWarp * 0.7); 
 
-        vAlpha = (1.0 - smoothstep(60.0, 160.0, radius)) * 0.6;
-        vAlpha *= smoothstep(2.0, 20.0, radius);
+        vAlpha = (1.0 - smoothstep(70.0, 100.0, radius)) * 0.8;
+        vAlpha *= smoothstep(0.0, 15.0, radius);
         
-        vColor *= (3.5 + uWarp * 2.0); 
-        vAlpha += uWarp * 0.2;
+        vColor *= (4.0 + uWarp * 3.0); 
+        vAlpha += uWarp * 0.3;
     }
 `;
 
 
 export default function GalaxyBackground({ isWarping }: { isWarping?: boolean }) {
     const meshRef = useRef<THREE.InstancedMesh>(null);
-    const count = 40000;
+    const count = 5000;
 
     const uniforms = useMemo(() => ({
         uTime: { value: 0 },

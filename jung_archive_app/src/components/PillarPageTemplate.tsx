@@ -5,6 +5,7 @@ import { Canvas } from '@react-three/fiber';
 import { PerspectiveCamera, Float, Sparkles, Torus, MeshDistortMaterial } from '@react-three/drei';
 import { EffectComposer, Bloom, ChromaticAberration, Vignette } from '@react-three/postprocessing';
 import * as THREE from 'three';
+import ThematicEntrance from './transitions/ThematicEntrance';
 
 interface PillarPageProps {
     pillar: {
@@ -27,7 +28,9 @@ export default function PillarPageTemplate({ pillar, articles }: PillarPageProps
     const ObjectComponent = pillar.Object;
 
     return (
-        <div className="min-h-screen bg-[#000508] text-white selection:bg-[#ffd700] selection:text-black overflow-x-hidden">
+        <div className="min-h-screen bg-[#000508] text-white selection:bg-[#ffd700] selection:text-black overflow-x-hidden" suppressHydrationWarning>
+            <ThematicEntrance key={pillar.id} pillarId={pillar.id} color={pillar.color} />
+
             {/* Cinematic Background - Subtle Alchemical Glow */}
             <div className="fixed inset-0 pointer-events-none">
                 <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[#ffd700] opacity-[0.03] blur-[120px] rounded-full" />
@@ -37,7 +40,7 @@ export default function PillarPageTemplate({ pillar, articles }: PillarPageProps
             <div className="max-w-7xl mx-auto px-6 py-12 relative z-10">
                 {/* Navigation */}
                 <Link
-                    href="/mandala-final"
+                    href="/select"
                     className="inline-flex items-center gap-3 mb-16 px-5 py-2.5 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 hover:border-[#ffd700]/50 transition-all group"
                 >
                     <span className="text-[#ffd700] group-hover:-translate-x-1 transition-transform">←</span>
@@ -115,12 +118,12 @@ export default function PillarPageTemplate({ pillar, articles }: PillarPageProps
                         </p>
                         <div className="pt-8 flex justify-center lg:justify-start gap-12 text-[10px] tracking-[0.4em] uppercase text-white/20">
                             <div className="flex flex-col gap-2">
-                                <span>Trạng thái</span>
-                                <span className="text-[#ffd700]/60">Đã kích hoạt</span>
+                                <span>Hệ tư tưởng</span>
+                                <span className="text-[#ffd700]/60">Cổ mẫu gốc</span>
                             </div>
                             <div className="flex flex-col gap-2">
-                                <span>Bản ghi</span>
-                                <span className="text-[#ffd700]/60">{articles.length} Hồ sơ</span>
+                                <span>Truy xuất</span>
+                                <span className="text-[#ffd700]/60">{articles.length} Mảnh ghép tâm linh</span>
                             </div>
                         </div>
                     </div>
@@ -137,7 +140,7 @@ export default function PillarPageTemplate({ pillar, articles }: PillarPageProps
                         {articles.map((article, index) => (
                             <Link
                                 key={article.slug}
-                                href={`/pillar/${pillar.id}/reading/${article.slug}`}
+                                href={`/select/pillar/${pillar.id}/reading/${article.slug}`}
                                 className="group block relative"
                             >
                                 <div className="absolute -inset-0.5 bg-gradient-to-r from-[#ffd700]/0 via-[#ffd700]/10 to-[#ffd700]/0 rounded-xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -182,11 +185,44 @@ export default function PillarPageTemplate({ pillar, articles }: PillarPageProps
                     </div>
 
                     {/* Clean Footer Decor */}
-                    <div className="pt-24 pb-12 text-center">
-                        <div className="inline-flex items-center gap-6 opacity-20">
-                            <div className="h-[1px] w-24 bg-gradient-to-r from-transparent to-white/50" />
-                            <span className="text-[10px] tracking-[1em] uppercase font-light text-white/50">End of Archives</span>
-                            <div className="h-[1px] w-24 bg-gradient-to-l from-transparent to-white/50" />
+                    {/* Navigation between Pillars */}
+                    <div className="pt-24 pb-12">
+                        <div className="grid grid-cols-1 md:grid-cols-3 items-center gap-8 py-12 border-t border-white/5">
+                            <div className="flex-1">
+                                <Link
+                                    href="/select" // Fallback - ideally calculated based on index
+                                    className="flex flex-col items-start gap-2 group p-6 rounded-xl border border-transparent hover:border-white/5 hover:bg-white/[0.02] transition-all"
+                                >
+                                    <span className="text-[10px] tracking-[0.4em] uppercase text-white/30 group-hover:text-[#ffd700] transition-colors">← Chủ đề trước</span>
+                                    <span className="text-xl font-serif text-white/50 group-hover:text-white transition-colors uppercase">Khám phá thêm</span>
+                                </Link>
+                            </div>
+
+                            <Link
+                                href="/select"
+                                className="flex flex-col items-center gap-4 opacity-40 hover:opacity-100 transition-opacity group"
+                            >
+                                <div className="w-12 h-[1px] bg-white group-hover:w-24 transition-all" />
+                                <span className="text-[10px] tracking-[0.8em] uppercase font-light">Mandala</span>
+                            </Link>
+
+                            <div className="flex-1 text-right">
+                                <Link
+                                    href="/select" // Fallback - ideally calculated based on index
+                                    className="flex flex-col items-end gap-2 group p-6 rounded-xl border border-transparent hover:border-white/5 hover:bg-white/[0.02] transition-all"
+                                >
+                                    <span className="text-[10px] tracking-[0.4em] uppercase text-white/30 group-hover:text-[#ffd700] transition-colors">Chủ đề sau →</span>
+                                    <span className="text-xl font-serif text-white/50 group-hover:text-white transition-colors uppercase">Tiếp tục hành trình</span>
+                                </Link>
+                            </div>
+                        </div>
+
+                        <div className="mt-12 text-center">
+                            <div className="inline-flex items-center gap-6 opacity-20">
+                                <div className="h-[1px] w-24 bg-gradient-to-r from-transparent to-white/50" />
+                                <span className="text-[10px] tracking-[1em] uppercase font-light text-white/50">End of Archives</span>
+                                <div className="h-[1px] w-24 bg-gradient-to-l from-transparent to-white/50" />
+                            </div>
                         </div>
                     </div>
                 </div>

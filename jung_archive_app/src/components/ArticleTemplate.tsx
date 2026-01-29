@@ -15,9 +15,9 @@ export default function ArticleTemplate({
             <div className="max-w-4xl mx-auto px-8 py-12">
                 {/* Breadcrumb */}
                 <div className="mb-8 text-sm text-gray-600">
-                    <a href="/mandala-final" className="hover:text-[#8B0000]">Home</a>
+                    <a href="/select" className="hover:text-[#8B0000]">Home</a>
                     {' / '}
-                    <a href={`/pillar/${pillar.id}`} className="hover:text-[#8B0000]">{pillar.name}</a>
+                    <a href={`/select/pillar/${pillar.id}`} className="hover:text-[#8B0000]">{pillar.name}</a>
                     {' / '}
                     <span className="text-[#8B0000]">{title}</span>
                 </div>

@@ -13,10 +13,10 @@ import GalaxyBackground from './GalaxyBackground';
 function OrbitTrail() {
     return (
         <group>
-            <Torus args={[800, 2, 12, 64]} rotation={[Math.PI / 2, 0, 0]}>
-                <meshBasicMaterial transparent opacity={0} />
-                <Sparkles count={300} scale={[1800, 20, 1800]} size={2} speed={0} color="#ffd700" opacity={0.2} />
+            <Torus args={[800, 1.5, 12, 120]} rotation={[Math.PI / 2, 0, 0]}>
+                <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={5} toneMapped={false} transparent opacity={0.3} />
             </Torus>
+            <Sparkles count={500} scale={[1800, 50, 1800]} size={3} speed={0.2} color="#ffd700" opacity={0.4} />
         </group>
     );
 }
@@ -95,7 +95,7 @@ function LightStreaks({ isActive, color }: { isActive: boolean, color: string })
         return Array.from({ length: count }).map(() => ({
             pos: [(Math.random() - 0.5) * 5000, (Math.random() - 0.5) * 5000, -Math.random() * 12000],
             len: Math.random() * 2000 + 500,
-            speed: Math.random() * 8000 + 4000
+            speed: Math.random() * 30000 + 20000
         }));
     }, []);
 
@@ -124,7 +124,8 @@ function JumpParticles({ isActive, color, pillar }: { isActive: boolean, color: 
     const finalColor = pillar ? color : coreColor;
     return (
         <group visible={isActive}>
-            <Sparkles count={pillar ? 500 : 1000} scale={5000} size={pillar ? 20 : 40} speed={0} color={finalColor} />
+            <AbyssalTunnel isActive={isActive} pillar={pillar} />
+            <Sparkles count={pillar ? 4000 : 8000} scale={5000} size={pillar ? 30 : 60} speed={10} color={finalColor} />
             <LightStreaks isActive={isActive} color={finalColor} />
             <TeaserMontage isActive={isActive} pillar={pillar} />
         </group>
@@ -187,13 +188,13 @@ const HolographicPlane = ({ name, isHovered }: { name: string, isHovered: boolea
         <group>
             <Billboard>
                 <Text
-                    fontSize={22}
-                    color="#ffffff"
-                    fillOpacity={isHovered ? 1.0 : 0.65}
+                    fontSize={14}
+                    color={isHovered ? "#ffffff" : "#ffed8b"}
+                    fillOpacity={isHovered ? 1.0 : 0.9}
                     anchorX="center"
                     anchorY="middle"
                     letterSpacing={0.4}
-                    fontWeight="normal"
+                    fontWeight="bold"
                 >
                     {name}
                 </Text>
@@ -227,20 +228,31 @@ const SpiritGlitch = ({ isHovered }: any) => {
 
     return (
         <group scale={1.8}>
-            {/* Layer 1: Outer Reality */}
+            {/* Layer 1: Outer Reality - The Crystal Shell */}
             <group ref={outerRef}>
                 <mesh>
-                    <boxGeometry args={[14, 14, 14, 2, 2, 2]} />
-                    <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={0.3} wireframe />
+                    <boxGeometry args={[14, 14, 14, 8, 8, 8]} />
+                    <meshPhysicalMaterial
+                        color="#ffffff"
+                        roughness={0}
+                        transmission={0.9}
+                        thickness={2}
+                        clearcoat={1}
+                        transparent
+                        opacity={0.3}
+                    />
                 </mesh>
-                <Sparkles count={20} scale={20} size={1.5} speed={0} color="#ffffff" opacity={0.4} />
+                <mesh>
+                    <boxGeometry args={[14.2, 14.2, 14.2]} />
+                    <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={5} wireframe toneMapped={false} />
+                </mesh>
             </group>
 
             {/* Layer 2: Dimensional Shift */}
             <group ref={midRef}>
                 <mesh rotation={[Math.PI / 4, Math.PI / 4, 0]}>
                     <boxGeometry args={[10, 10, 10, 2, 2, 2]} />
-                    <meshStandardMaterial color="#a0aec0" emissive="#ffffff" emissiveIntensity={0.6} wireframe />
+                    <meshStandardMaterial color="#a0aec0" emissive="#ffffff" emissiveIntensity={2} wireframe toneMapped={false} />
                 </mesh>
             </group>
 
@@ -248,12 +260,20 @@ const SpiritGlitch = ({ isHovered }: any) => {
             <group ref={innerRef}>
                 <mesh>
                     <octahedronGeometry args={[5, 1]} />
-                    <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={1.5} wireframe />
+                    <meshPhysicalMaterial
+                        color="#ff0000"
+                        emissive="#ff0000"
+                        emissiveIntensity={30}
+                        toneMapped={false}
+                        roughness={0}
+                        metalness={1}
+                    />
                 </mesh>
                 <mesh>
-                    <sphereGeometry args={[2, 16, 16]} />
-                    <meshBasicMaterial color="#ffffff" />
+                    <sphereGeometry args={[2.8, 32, 32]} />
+                    <meshBasicMaterial color="#ffffff" toneMapped={false} />
                 </mesh>
+                <pointLight intensity={10} color="#ff0000" distance={60} />
             </group>
         </group>
     );
@@ -275,37 +295,41 @@ const Runestone = ({ isHovered }: any) => {
 
     return (
         <group scale={2.0}>
-            {/* The Monolith */}
+            {/* The Monolith - Polished Obsidian */}
             <mesh position={[0, 0, 0]}>
-                <cylinderGeometry args={[2, 4, 30, 8, 4]} />
-                <meshStandardMaterial color="#ffd700" emissive="#ffaa00" emissiveIntensity={0.5} wireframe />
+                <cylinderGeometry args={[2, 4, 30, 32, 1, false]} />
+                <meshPhysicalMaterial
+                    color="#050505"
+                    roughness={0.1}
+                    metalness={0.9}
+                    reflectivity={1}
+                    clearcoat={1}
+                />
             </mesh>
-            {/* Pyramid Cap */}
+            {/* Pyramid Cap - Radiant Gold */}
             <mesh position={[0, 17, 0]}>
-                <coneGeometry args={[2, 4, 8]} />
-                <meshStandardMaterial color="#ffd700" emissive="#ffaa00" emissiveIntensity={0.8} wireframe />
+                <coneGeometry args={[2, 4, 32]} />
+                <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={10} toneMapped={false} />
             </mesh>
-            {/* Vertical Energy Lines */}
-            <mesh position={[3, 0, 0]}>
-                <boxGeometry args={[0.2, 25, 0.2]} />
-                <meshBasicMaterial color="#ffaa00" />
-            </mesh>
-            <mesh position={[-3, 0, 0]}>
-                <boxGeometry args={[0.2, 25, 0.2]} />
-                <meshBasicMaterial color="#ffaa00" />
-            </mesh>
+            {/* Energy Lines */}
+            {[0, 1, 2, 3].map(i => (
+                <mesh key={i} position={[Math.cos(i * Math.PI / 2) * 3, 0, Math.sin(i * Math.PI / 2) * 3]}>
+                    <boxGeometry args={[0.3, 28, 0.3]} />
+                    <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={5} toneMapped={false} />
+                </mesh>
+            ))}
 
             {/* Orbiting Runes */}
             <group ref={rings}>
                 {[0, 1, 2].map(i => (
                     <group key={i} rotation={[Math.PI / 2, 0, 0]}>
                         <mesh>
-                            <torusGeometry args={[8 + i * 3, 0.1, 8, 48]} />
-                            <meshStandardMaterial color="#ffd700" emissive="#ffaa00" emissiveIntensity={0.8} wireframe />
+                            <torusGeometry args={[8 + i * 3, 0.2, 16, 64]} />
+                            <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={2} wireframe toneMapped={false} />
                         </mesh>
                         <mesh position={[8 + i * 3, 0, 0]}>
-                            <sphereGeometry args={[0.5, 8, 8]} />
-                            <meshBasicMaterial color="#ffffff" />
+                            <icosahedronGeometry args={[1.2, 0]} />
+                            <meshStandardMaterial color="#ffffff" emissive="#ffd700" emissiveIntensity={15} toneMapped={false} />
                         </mesh>
                     </group>
                 ))}
@@ -348,8 +372,8 @@ const CrystalArbor = ({ isHovered }: any) => {
                     </mesh>
                     {/* Glowing Fruits */}
                     <mesh position={[0, 12, 0]}>
-                        <icosahedronGeometry args={[0.8, 0]} />
-                        <meshBasicMaterial color="#ffffff" />
+                        <icosahedronGeometry args={[1.2, 0]} />
+                        <meshStandardMaterial color="#ffffff" emissive="#ccff00" emissiveIntensity={4} toneMapped={false} />
                     </mesh>
                 </group>
             ))}
@@ -382,31 +406,33 @@ const CosmosSingularity = ({ isHovered }: any) => {
 
     return (
         <group scale={2.2}>
-            {/* Central Sun */}
+            {/* Central Sun - Volumetric Bloom */}
             <mesh>
-                <sphereGeometry args={[3, 32, 32]} />
-                <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={2} />
+                <sphereGeometry args={[4.5, 64, 64]} />
+                <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={20} toneMapped={false} />
             </mesh>
-            {/* Gyroscope Rings */}
+            <pointLight intensity={15} color="#ffffff" distance={100} />
+
+            {/* High-Fidelity Gyroscope */}
             <group ref={rings}>
                 <mesh>
-                    <torusGeometry args={[8, 0.2, 16, 64]} />
-                    <meshStandardMaterial color="#88ccff" emissive="#ffffff" emissiveIntensity={0.8} wireframe />
+                    <torusGeometry args={[8, 0.3, 16, 128]} />
+                    <meshPhysicalMaterial color="#88ccff" transmission={0.5} thickness={2} roughness={0} clearcoat={1} />
                 </mesh>
                 <mesh>
-                    <torusGeometry args={[10, 0.2, 16, 64]} />
-                    <meshStandardMaterial color="#88ccff" emissive="#ffffff" emissiveIntensity={0.8} wireframe />
+                    <torusGeometry args={[11, 0.3, 16, 128]} />
+                    <meshPhysicalMaterial color="#88ffaa" transmission={0.5} thickness={2} roughness={0} clearcoat={1} />
                 </mesh>
                 <mesh>
-                    <torusGeometry args={[12, 0.2, 16, 64]} />
-                    <meshStandardMaterial color="#88ccff" emissive="#ffffff" emissiveIntensity={0.8} wireframe />
+                    <torusGeometry args={[14, 0.1, 8, 256]} />
+                    <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={40} toneMapped={false} />
                 </mesh>
                 <mesh>
-                    <torusGeometry args={[6, 0.4, 16, 64]} />
-                    <meshStandardMaterial color="#4488ff" emissive="#4488ff" emissiveIntensity={1.2} />
+                    <torusGeometry args={[6.5, 0.5, 24, 64]} />
+                    <meshStandardMaterial color="#000000" emissive="#4400ff" emissiveIntensity={5} toneMapped={false} />
                 </mesh>
             </group>
-            <Sparkles count={50} scale={25} size={1} speed={0} color="#ffffff" />
+            <Sparkles count={100} scale={25} size={2} speed={1} color="#ffffff" />
         </group>
     );
 };
@@ -435,12 +461,12 @@ const SynapticGrid = ({ isHovered }: any) => {
                 return (
                     <group key={i} rotation={[Math.PI / 4, angle, 0]}>
                         <mesh position={[10, 0, 0]}>
-                            <icosahedronGeometry args={[1.5, 0]} />
-                            <meshStandardMaterial color="#0088ff" emissive="#0088ff" emissiveIntensity={1} wireframe />
+                            <icosahedronGeometry args={[2.0, 0]} />
+                            <meshStandardMaterial color="#ffffff" emissive="#0088ff" emissiveIntensity={5} toneMapped={false} />
                         </mesh>
                         <mesh rotation={[0, 0, Math.PI / 2]} position={[5, 0, 0]}>
-                            <cylinderGeometry args={[0.1, 0.1, 10]} />
-                            <meshBasicMaterial color="#0044ff" transparent opacity={0.5} />
+                            <cylinderGeometry args={[0.2, 0.2, 10]} />
+                            <meshBasicMaterial color="#0088ff" transparent opacity={0.8} />
                         </mesh>
                     </group>
                 )
@@ -523,7 +549,7 @@ const LogicCore = ({ isHovered }: any) => {
             {/* Inner Core */}
             <mesh ref={inner}>
                 <octahedronGeometry args={[4, 0]} />
-                <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={1.5} wireframe />
+                <meshStandardMaterial color="#ffffff" emissive="#ffffff" emissiveIntensity={8} toneMapped={false} />
             </mesh>
         </group>
     );
@@ -603,8 +629,8 @@ const AlchemicalCrucible = ({ isHovered }: any) => {
             </group>
             {/* Philosopher's Stone */}
             <mesh position={[0, 0, 0]}>
-                <dodecahedronGeometry args={[3, 0]} />
-                <meshStandardMaterial color="#ffffff" emissive="#00ff44" emissiveIntensity={2} wireframe />
+                <dodecahedronGeometry args={[3.5, 0]} />
+                <meshStandardMaterial color="#ffffff" emissive="#00ff44" emissiveIntensity={8} toneMapped={false} />
             </mesh>
             <mesh rotation={[Math.PI / 2, 0, 0]}>
                 <coneGeometry args={[4, 8, 4]} />
@@ -629,38 +655,48 @@ const MandalaLotus = ({ isHovered }: any) => {
             layer3.current.position.y = Math.sin(t * 1.5) * 3;
         }
 
-        const targetX1 = isHovered ? -0.5 : 0;
-        const targetX2 = isHovered ? -0.3 : 0;
+        const targetX1 = isHovered ? -0.8 : 0;
+        const targetX2 = isHovered ? -0.5 : 0;
         if (layer1.current) layer1.current.rotation.x = THREE.MathUtils.damp(layer1.current.rotation.x, targetX1, 4, delta);
         if (layer2.current) layer2.current.rotation.x = THREE.MathUtils.damp(layer2.current.rotation.x, targetX2, 4, delta);
     });
 
     return (
         <group scale={2.5} rotation={[Math.PI / 4, 0, 0]}>
-            {/* Layer 1 - Outer */}
+            {/* Layer 1 - Translucent Outer Petals */}
             <group ref={layer1}>
                 {[...Array(12)].map((_, i) => (
                     <mesh key={i} rotation={[0, 0, (i / 12) * Math.PI * 2]} position={[0, 6, 0]}>
-                        <coneGeometry args={[1.5, 8, 4]} />
-                        <meshStandardMaterial color="#ff00ff" emissive="#ff00ff" emissiveIntensity={0.5} wireframe />
+                        <coneGeometry args={[2, 10, 16]} />
+                        <meshPhysicalMaterial
+                            color="#ff00ff"
+                            emissive="#ff00ff"
+                            emissiveIntensity={2}
+                            transmission={0.8}
+                            thickness={1}
+                            transparent
+                            opacity={0.6}
+                            toneMapped={false}
+                        />
                     </mesh>
                 ))}
             </group>
-            {/* Layer 2 - Mid */}
+            {/* Layer 2 - Glowing Inner Petals */}
             <group ref={layer2}>
                 {[...Array(8)].map((_, i) => (
                     <mesh key={i} rotation={[0, 0, (i / 8) * Math.PI * 2]} position={[0, 4, 0]}>
-                        <coneGeometry args={[1.2, 6, 4]} />
-                        <meshStandardMaterial color="#ff00ff" emissive="#ff00ff" emissiveIntensity={0.8} wireframe />
+                        <coneGeometry args={[1.5, 7, 16]} />
+                        <meshStandardMaterial color="#ff00ff" emissive="#ffffff" emissiveIntensity={5} toneMapped={false} />
                     </mesh>
                 ))}
             </group>
-            {/* Center */}
+            {/* Center - The Golden Seed */}
             <group ref={layer3}>
                 <mesh>
-                    <dodecahedronGeometry args={[2.5, 0]} />
-                    <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={1.5} wireframe />
+                    <dodecahedronGeometry args={[3, 0]} />
+                    <meshStandardMaterial color="#ffd700" emissive="#ffd700" emissiveIntensity={10} toneMapped={false} />
                 </mesh>
+                <Sparkles count={40} scale={10} size={2} color="#ffd700" />
             </group>
         </group>
     );
@@ -668,102 +704,90 @@ const MandalaLotus = ({ isHovered }: any) => {
 
 const PILLARS = [
     {
-        id: 'biography', name: 'TIỂU SỬ', Object: BioFragment, baseScale: 1.8, color: "#bb00ff",
+        id: 'tieu-su', name: 'TIỂU SỬ', Object: BioFragment, baseScale: 2.0, color: "#bb00ff",
         transitionMsg: "CHƯƠNG I: CUỘC ĐỜI & DI SẢN", transitionColor: "#0a0015",
         teaserKeywords: ["Zurich 1875", "Tháp Bollingen", "Ký ức", "Toni Wolff", "Emma Jung"]
     },
     {
-        id: 'concepts', name: 'KHÁI NIỆM', Object: LogicCore, baseScale: 2.1, color: "#00ffff",
+        id: 'khai-niem', name: 'KHÁI NIỆM', Object: LogicCore, baseScale: 2.2, color: "#00ffff",
         transitionMsg: "CHƯƠNG II: CẤU TRÚC TÂM LÝ", transitionColor: "#000808",
         teaserKeywords: ["Cổ mẫu", "Bóng tối", "Mặt nạ", "Anima", "Animus"]
     },
     {
-        id: 'red_book', name: 'SÁCH ĐỎ', Object: RedBookLegacy, baseScale: 1.7, color: "#ff0000",
+        id: 'sach-do', name: 'SÁCH ĐỎ', Object: RedBookLegacy, baseScale: 1.8, color: "#ff0000",
         transitionMsg: "CHƯƠNG III: KHẢI HUYỀN NỘI TÂM", transitionColor: "#150000",
         teaserKeywords: ["Liber Novus", "Philemon", "Sa mạc", "Đối thoại", "Nghi lễ đỏ"]
     },
     {
-        id: 'alchemy', name: 'GIẢ KIM', Object: AlchemicalCrucible, baseScale: 1.8, color: "#00ff44",
+        id: 'gia-kim', name: 'GIẢ KIM', Object: AlchemicalCrucible, baseScale: 2.0, color: "#00ff44",
         transitionMsg: "CHƯƠNG IV: GIẢ KIM THUẬT", transitionColor: "#000a03",
         teaserKeywords: ["Solutio", "Hòn đá triết gia", "Chì thành Vàng", "Hợp nhất", "Bình chứa Linh hồn"]
     },
     {
-        id: 'practice', name: 'THỰC HÀNH', Object: MandalaLotus, baseScale: 2.3, color: "#ff00ff",
+        id: 'thuc-hanh', name: 'THỰC HÀNH', Object: MandalaLotus, baseScale: 2.4, color: "#ff00ff",
         transitionMsg: "CHƯƠNG V: PHƯƠNG PHÁP LUẬN", transitionColor: "#0a000a",
         teaserKeywords: ["Tưởng tượng tích cực", "Giải mã giấc mơ", "Mandala", "Thần chú"]
     },
     {
-        id: 'symbols', name: 'BIỂU TƯỢNG', Object: Runestone, baseScale: 1.4, color: "#ffd700",
+        id: 'bieu-tuong', name: 'BIỂU TƯỢNG', Object: Runestone, baseScale: 2.0, color: "#ffd700",
         transitionMsg: "CHƯƠNG VI: BIỂU TƯỢNG HỌC", transitionColor: "#0a0800",
         teaserKeywords: ["Ouroboros", "Vòng tròn", "Thập tự", "Cổ ngữ", "Hình học thiêng"]
     },
     {
-        id: 'spirit', name: 'TÂM LINH', Object: SpiritGlitch, baseScale: 2.2, color: "#ffffff",
+        id: 'tam-linh', name: 'TÂM LINH', Object: SpiritGlitch, baseScale: 2.3, color: "#ffffff",
         transitionMsg: "CHƯƠNG VII: CHIỀU KÍCH TÂM LINH", transitionColor: "#080808",
         teaserKeywords: ["Vô thức tập thể", "Đồng hiện", "Cái Tôi", "Sự sung túc"]
     },
     {
-        id: 'legacy', name: 'DI SẢN', Object: CrystalArbor, baseScale: 1.2, color: "#aaff00",
+        id: 'di-san', name: 'DI SẢN', Object: CrystalArbor, baseScale: 1.8, color: "#aaff00",
         transitionMsg: "CHƯƠNG VIII: TIẾP NỐI THẾ HỆ", transitionColor: "#050a00",
         teaserKeywords: ["Tâm lý học Phân tích", "MBTI", "Joseph Campbell", "Cội rễ"]
     },
     {
-        id: 'cosmos', name: 'VŨ TRỤ', Object: CosmosSingularity, baseScale: 1.3, color: "#ffffff",
+        id: 'vu-tru', name: 'VŨ TRỤ', Object: CosmosSingularity, baseScale: 2.0, color: "#ffffff",
         transitionMsg: "CHƯƠNG IX: VŨ TRỤ QUAN", transitionColor: "#000000",
         teaserKeywords: ["Unus Mundus", "Tâm thể", "Chân trời sự kiện", "Điểm kỳ dị"]
     },
     {
-        id: 'encounters', name: 'GẶP GỠ', Object: SynapticGrid, baseScale: 1.6, color: "#0044ff",
+        id: 'gap-go', name: 'GẶP GỠ', Object: SynapticGrid, baseScale: 2.1, color: "#0044ff",
         transitionMsg: "CHƯƠNG X: NHỮNG CUỘC GẶP GỠ", transitionColor: "#00040a",
         teaserKeywords: ["Sigmund Freud", "Wolfgang Pauli", "Tình bạn", "Định mệnh"]
     },
 ];
 
-function OrbitalNucleus({ pillar, index, onHover, onLeave, onClick, isHovered, sharedAngleRef, isDiving, isSelected }: any) {
+function OrbitalNucleus({ pillar, index, sharedAngleRef, isDiving, isSelected, onClick }: any) {
     const groupRef = useRef<THREE.Group>(null);
     const labelRef = useRef<THREE.Group>(null);
-    const orbitRadius = 800; // Unified Radius
+    const [localHover, setLocalHover] = useState(false);
+    const orbitRadius = 800;
 
     useFrame((state, delta) => {
-        if (groupRef.current) {
-            const angleOffset = (index * Math.PI * 2) / 10;
-            const angle = sharedAngleRef.current + angleOffset;
+        if (!groupRef.current) return;
 
-            // X-Z PLANE ALIGNMENT
-            const targetX = Math.cos(angle) * orbitRadius;
-            const targetZ = Math.sin(angle) * orbitRadius;
-            groupRef.current.position.set(targetX, 0, targetZ);
+        const angleOffset = (index * Math.PI * 2) / 10;
+        const angle = sharedAngleRef.current + angleOffset;
 
-            // Perspective Compensation
-            const worldPos = new THREE.Vector3();
-            groupRef.current.getWorldPosition(worldPos);
-            const dist = state.camera.position.distanceTo(worldPos);
-            const scaleFactor = dist / 2800;
+        // Position update
+        groupRef.current.position.set(Math.cos(angle) * orbitRadius, 0, Math.sin(angle) * orbitRadius);
 
-            // Artifact Scaling - MATCHING THE SUBSTANTIAL FEEL OF RED BOOK
-            const targetScale = (isHovered ? 2.6 : 1.5) * (pillar.baseScale || 1.0) * scaleFactor;
-            groupRef.current.scale.setScalar(THREE.MathUtils.damp(groupRef.current.scale.x, targetScale, 6, delta));
+        // Simple scale - removed expensive world distance on every frame
+        const targetScale = (localHover ? 2.2 : 1.4) * (pillar.baseScale || 1.0);
+        groupRef.current.scale.x = THREE.MathUtils.damp(groupRef.current.scale.x, targetScale, 6, delta);
+        groupRef.current.scale.y = groupRef.current.scale.x;
+        groupRef.current.scale.z = groupRef.current.scale.x;
 
-            // Fade Logic for Transition
-            if (isDiving) {
-                const opacityTarget = isSelected ? 1.0 : 0.0;
-                groupRef.current.visible = isSelected || (opacityTarget > 0);
-                // Note: We'd need material access for smooth fade, but toggle visible is a safe fallback
-            }
+        if (labelRef.current && !isDiving) {
+            // Keep labels at a fixed offset but calculate a dynamic scale to counteract the parent's scale
+            labelRef.current.position.set(Math.cos(angle) * 75, 0, Math.sin(angle) * 75);
 
-            if (labelRef.current) {
-                const currentParentScale = groupRef.current.scale.x;
-                const visualGapFactor = 145;
-                const adaptivePush = (visualGapFactor * (dist / 2800)) / currentParentScale;
-                labelRef.current.position.set(Math.cos(angle) * adaptivePush, 0, Math.sin(angle) * adaptivePush);
+            // To "fix" the size, we want the global scale to be constant (e.g., 2.8)
+            // Global Scale = groupRef.scale * labelRef.scale
+            // So, labelRef.scale = constant / groupRef.scale
+            const baseConstant = 3.2; // Optimized for clarity
+            const targetLabelScale = (localHover ? 1.2 : 1.0) * baseConstant;
 
-                const baseOnScreenScale = (dist / 2800);
-                const hoverFactor = isHovered ? 1.25 : 1.0;
-                labelRef.current.scale.setScalar((baseOnScreenScale / currentParentScale) * hoverFactor);
-
-                // Hide labels during dive
-                if (isDiving) labelRef.current.visible = false;
-            }
+            // We divide by current group scale to normalize it across all pillars
+            labelRef.current.scale.setScalar(targetLabelScale / groupRef.current.scale.x);
         }
     });
 
@@ -775,20 +799,20 @@ function OrbitalNucleus({ pillar, index, onHover, onLeave, onClick, isHovered, s
                 if (isDiving) return;
                 e.stopPropagation();
                 document.body.style.cursor = 'pointer';
-                onHover();
+                setLocalHover(true);
             }}
             onPointerOut={() => {
                 if (isDiving) return;
                 document.body.style.cursor = 'default';
-                onLeave();
+                setLocalHover(false);
             }}
             onClick={() => {
                 if (!isDiving) onClick(pillar);
             }}
         >
-            <pillar.Object isHovered={isHovered} />
-            <group ref={labelRef}>
-                <HolographicPlane name={pillar.name} isHovered={isHovered} />
+            <pillar.Object isHovered={localHover} />
+            <group ref={labelRef} visible={!isDiving}>
+                <HolographicPlane name={pillar.name} isHovered={localHover} />
             </group>
         </group>
     );
@@ -831,7 +855,7 @@ function MandalaCamera({ isDiving, selectedPillarIndex, sharedAngleRef, transiti
                 const zoomDist = THREE.MathUtils.lerp(800, -2000, Math.pow(progress, 2.5));
                 const camX = Math.cos(angle) * (orbitRadius - zoomDist);
                 const camZ = Math.sin(angle) * (orbitRadius - zoomDist);
-                camera.position.set(camX, 0, camZ);
+                camera.position.set(camX, Math.sin(t * 10) * 20, camZ);
                 camera.lookAt(0, 0, 0);
                 (camera as THREE.PerspectiveCamera).fov = THREE.MathUtils.lerp(35, 120, progress);
             }
@@ -917,7 +941,7 @@ function SacredMandala({ isDiving, setIsDiving, selectedPillarIndex, setSelected
         setTimeout(() => setTransitionStage('HYPERSPACE'), 2000);
         setTimeout(() => {
             const pillar = PILLARS[idx];
-            router.push(`/pillar/${pillar.id}`);
+            router.push(`/select/pillar/${pillar.id}`);
         }, 8500);
     };
 
@@ -928,7 +952,7 @@ function SacredMandala({ isDiving, setIsDiving, selectedPillarIndex, setSelected
         setTransitionStage('ACTIVATING');
 
         setTimeout(() => setTransitionStage('HYPERSPACE'), 2000);
-        setTimeout(() => router.push('/library'), 8500);
+        setTimeout(() => router.push('/select/library'), 8500);
     };
 
     return (
@@ -942,8 +966,15 @@ function SacredMandala({ isDiving, setIsDiving, selectedPillarIndex, setSelected
 
             <group ref={ringsRef}>
                 <Float speed={isDiving ? 0 : 0.4} rotationIntensity={0.02} floatIntensity={0.1}>
-                    <Torus args={[800, 1.2, 16, 120]} rotation={[Math.PI / 2, 0, 0]}>
-                        <meshBasicMaterial color="#ffd700" transparent opacity={0.15} />
+                    <Torus args={[800, 3.0, 16, 256]} rotation={[Math.PI / 2, 0, 0]}>
+                        <meshStandardMaterial
+                            color="#ffd700"
+                            emissive="#ffd700"
+                            emissiveIntensity={25}
+                            toneMapped={false}
+                            transparent
+                            opacity={0.6}
+                        />
                     </Torus>
 
                     <group>
@@ -953,10 +984,7 @@ function SacredMandala({ isDiving, setIsDiving, selectedPillarIndex, setSelected
                                 pillar={pillar}
                                 index={index}
                                 sharedAngleRef={sharedAngleRef}
-                                onHover={() => setHoveredIndex(index)}
-                                onLeave={() => setHoveredIndex(null)}
-                                onClick={() => triggerDive(index)}
-                                isHovered={hoveredIndex === index}
+                                onClick={(p: any) => triggerDive(index)}
                                 isDiving={isDiving}
                                 isSelected={selectedPillarIndex === index}
                             />
@@ -966,6 +994,13 @@ function SacredMandala({ isDiving, setIsDiving, selectedPillarIndex, setSelected
             </group>
 
             <OrbitTrail />
+
+            {/* THE HYPERSPACE EFFECTS */}
+            <AbyssalTunnel
+                isActive={transitionStage === 'HYPERSPACE'}
+                pillar={selectedPillarIndex !== null ? PILLARS[selectedPillarIndex] : null}
+            />
+
             <JumpParticles
                 isActive={transitionStage === 'HYPERSPACE'}
                 color={selectedPillarIndex !== null ? PILLARS[selectedPillarIndex].color : "#ffffff"}
@@ -980,22 +1015,22 @@ function SacredMandala({ isDiving, setIsDiving, selectedPillarIndex, setSelected
                     onPointerOut={() => { document.body.style.cursor = 'default'; }}
                 >
                     <mesh ref={selfCoreRef}>
-                        <icosahedronGeometry args={[125, 4]} />
+                        <icosahedronGeometry args={[130, 8]} />
                         <meshStandardMaterial
                             color="#ffd700"
-                            emissive="#ffaa00"
-                            emissiveIntensity={8}
+                            emissive="#ffd700"
+                            emissiveIntensity={25}
                             wireframe
                             transparent
-                            opacity={0.1}
+                            opacity={0.4}
                             toneMapped={false}
                         />
                     </mesh>
                     <mesh>
-                        <sphereGeometry args={[85, 32, 32]} />
+                        <sphereGeometry args={[90, 32, 32]} />
                         <meshBasicMaterial color="#ffffff" toneMapped={false} />
                     </mesh>
-                    <pointLight intensity={22} color="#ffffff" distance={2500} />
+                    <pointLight intensity={35} color="#ffd700" distance={3000} />
                 </group>
             </Float>
         </group>
@@ -1022,19 +1057,17 @@ export default function MandalaWithObjects() {
     }
 
     return (
-        <div className="relative w-full h-screen overflow-hidden bg-[#000508]" suppressHydrationWarning>
-            <Canvas shadows={false} gl={{ toneMappingExposure: 1.0, powerPreference: 'high-performance', antialias: false }}>
-                <color attach="background" args={['#000508']} />
+        <div className="relative w-full h-screen overflow-hidden" suppressHydrationWarning>
+            <Canvas shadows={false} dpr={[1, 1.5]} gl={{ alpha: true, toneMappingExposure: 1.5, powerPreference: 'high-performance', antialias: false }}>
+                <fog attach="fog" args={['#050200', 1000, 5000]} />
 
-                <ambientLight intensity={1.5} />
-                <pointLight position={[0, 1000, 1000]} intensity={2.0} color="#ffffff" />
+                <ambientLight intensity={0.5} />
+                <pointLight position={[100, 100, 100]} intensity={10} color="#ffaa00" />
+                <hemisphereLight intensity={1} groundColor="#000000" color="#8a0303" />
 
                 <Suspense fallback={null}>
-                    {/* Simplified Atmospheric Layer */}
-                    <Stars radius={3000} depth={50} count={3000} factor={4} saturation={0} fade speed={0} />
-                    <group scale={40} rotation={[0, 0, 0]}>
-                        <GalaxyBackground isWarping={transitionStage === 'HYPERSPACE'} />
-                    </group>
+                    {/* Alchemical Atmosphere - Reduced for Performance */}
+                    <Sparkles count={200} scale={2000} size={4} speed={0.4} opacity={0.5} color="#d4af37" />
 
                     <SacredMandala
                         isDiving={isDiving} setIsDiving={setIsDiving}
@@ -1043,8 +1076,11 @@ export default function MandalaWithObjects() {
                     />
                 </Suspense>
 
-                {/* REMOVED EffectComposer to prevent GPU flickering on laggy hardware */}
-                <ambientLight intensity={1.0} />
+                <EffectComposer multisampling={0}>
+                    <Bloom luminanceThreshold={isDiving ? 0.2 : 0.9} intensity={isDiving ? 1.2 : 0.4} mipmapBlur />
+                    {isDiving && <ChromaticAberration offset={[0.005, 0.005] as any} />}
+                    <Vignette eskil={false} offset={0.3} darkness={(isDiving ? 2.0 : 1.2) as any} />
+                </EffectComposer>
             </Canvas>
 
             <AnimatePresence>
@@ -1075,11 +1111,11 @@ export default function MandalaWithObjects() {
                 className="absolute inset-0 pointer-events-none flex flex-col items-center py-12 z-20"
             >
                 <div className="text-center">
-                    <h1 className="text-4xl md:text-7xl font-serif italic tracking-[0.25em] text-[#ffd700] drop-shadow-[0_0_50px_rgba(255,215,0,0.6)]">
+                    <h1 className="text-4xl md:text-7xl font-serif italic tracking-[0.25em] text-[#ffd700] drop-shadow-[0_0_30px_rgba(255,215,0,0.8)]">
                         THE JUNG ARCHIVE
                     </h1>
                     <div className="h-[1px] w-64 bg-gradient-to-r from-transparent via-[#ffd700] to-transparent opacity-60 mt-4 mx-auto" />
-                    <p className="mt-6 text-sm tracking-[0.8em] text-[#ffaa00] opacity-80 uppercase font-light">
+                    <p className="mt-6 text-sm tracking-[0.8em] text-[#ff8800] opacity-90 uppercase font-light">
                         Mundus Imaginalis • Linh Hồn Giả Kim
                     </p>
                 </div>

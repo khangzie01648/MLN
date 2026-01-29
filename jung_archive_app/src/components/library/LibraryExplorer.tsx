@@ -107,7 +107,7 @@ export default function LibraryExplorer({ articles }: { articles: Article[] }) {
                                 key={article.slug}
                                 className="group relative"
                             >
-                                <Link href={`/library/${article.slug}`}>
+                                <Link href={`/select/library/${article.slug}`}>
                                     <div className="h-full bg-[#14161f] border border-[#d4af37]/10 rounded-xl overflow-hidden hover:border-[#d4af37]/60 transition-colors duration-500 shadow-lg hover:shadow-[#d4af37]/20 flex flex-col">
                                         {/* Decorative Header (Simulating a Book Spine/Cover top) */}
                                         <div className="h-2 w-full" style={{ backgroundColor: article.pillarColor }}></div>

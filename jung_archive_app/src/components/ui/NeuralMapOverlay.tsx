@@ -56,7 +56,7 @@ export default function NeuralMapOverlay({ articles, color }: { articles: any[],
                                         transition={{ delay: idx * 0.05 }}
                                         className="group"
                                     >
-                                        <Link href={`/pillar/${art.pillarId}/${art.slug}`}>
+                                        <Link href={`/select/pillar/${art.pillarId}/reading/${art.slug}`}>
                                             <div className="p-10 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] hover:border-white/20 transition-all rounded-sm relative overflow-hidden h-[300px] flex flex-col justify-between">
                                                 <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-20 transition-opacity">
                                                     <span className="text-8xl font-black text-white">{idx + 1}</span>

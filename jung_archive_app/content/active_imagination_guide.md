@@ -1,3 +1,9 @@
+---
+title: "Hướng dẫn Tưởng tượng Chủ động (Active Imagination)"
+date: 2026-01-27
+description: "Kỹ thuật cốt lõi của Jung để đối thoại với vô thức và khai phá tiềm năng tâm hồn."
+---
+
 # HƯỚNG DẪN TƯỞNG TƯỢNG CHỦ ĐỘNG (ACTIVE IMAGINATION)
 
 *"Trong tất cả các bệnh nhân của tôi, những người tìm ra được hòn đá của riêng mình (tức Active Imagination) đều không bao giờ cần quay lại gặp bác sĩ nữa."* — C.G. Jung

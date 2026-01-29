@@ -26,7 +26,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${playfair.variable} ${montserrat.variable} antialiased bg-[#050505] text-[#e0e0e0] overflow-x-hidden w-full min-h-screen font-montserrat`}
         suppressHydrationWarning

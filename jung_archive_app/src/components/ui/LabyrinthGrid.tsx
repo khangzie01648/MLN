@@ -97,7 +97,7 @@ export default function LabyrinthGrid({ initialArticles }: LabyrinthGridProps) {
                             transition={{ duration: 0.3 }}
                         >
                             <Link
-                                href={`/pillar/${article.pillarId}/reading/${article.slug}`}
+                                href={`/select/pillar/${article.pillarId}/reading/${article.slug}`}
                                 style={{
                                     borderColor: `${article.pillarColor}40`,
                                     color: article.pillarColor || '#fff'

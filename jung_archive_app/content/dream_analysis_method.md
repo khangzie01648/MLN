@@ -1,3 +1,9 @@
+---
+title: "Phương pháp Phân tích Giấc mơ"
+date: 2026-01-27
+description: "Cách tiếp cận của Jung trong việc giải mã thông điệp từ vô thức thông qua biểu tượng giấc mơ."
+---
+
 # HƯỚNG DẪN GIẢI MÃ GIẤC MƠ (DREAM ANALYSIS)
 
 *"Giấc mơ là cánh cửa nhỏ dẫn vào những nơi sâu thẳm kín đáo nhất của tâm hồn."* — C.G. Jung

@@ -60,7 +60,7 @@ export default function NexusLayout({ pillar }: NexusLayoutProps) {
     if (!isMounted) return <div className="h-screen w-full bg-black" />;
 
     return (
-        <main className="h-screen w-full bg-[#000000] text-white relative font-sans overflow-hidden select-none">
+        <main className="h-screen w-full bg-[#1a0500] text-[#e0e0e0] relative font-sans overflow-hidden select-none" suppressHydrationWarning>
 
             {/* AMBIENT LAYERS: FILM GRAIN & LIQUID DISTORTION */}
             <div className="fixed inset-0 z-[100] pointer-events-none opacity-[0.1] bg-[url('https://grainy-gradients.vercel.app/noise.svg')] mix-blend-overlay" />
@@ -94,10 +94,14 @@ export default function NexusLayout({ pillar }: NexusLayoutProps) {
                         {/* 3D GALAXY CORE */}
                         <div className="absolute inset-0 z-0">
                             <Canvas dpr={1} camera={{ position: [0, 60, 100], fov: 45 }}>
-                                <GalaxyBackground />
+                                <color attach="background" args={['#1a0500']} />
+                                <fog attach="fog" args={['#1a0500', 50, 300]} />
+                                <ambientLight intensity={0.5} />
+                                <pointLight position={[100, 100, 100]} color="#ffaa00" intensity={2} />
+                                <Sparkles count={200} scale={100} size={4} speed={0.4} opacity={0.5} color="#d4af37" />
                                 <EffectComposer>
-                                    <Bloom intensity={1.5} mipmapBlur />
-                                    <ChromaticAberration offset={new THREE.Vector2(0.005, 0.005)} />
+                                    <Bloom intensity={1.5} mipmapBlur luminanceThreshold={0.5} />
+                                    <ChromaticAberration offset={new THREE.Vector2(0.002, 0.002)} />
                                 </EffectComposer>
                                 <Rig />
                             </Canvas>
@@ -138,7 +142,7 @@ export default function NexusLayout({ pillar }: NexusLayoutProps) {
 
                             <motion.button
                                 onClick={initDreamSync}
-                                className="group relative w-full max-w-lg py-6 bg-white/10 hover:bg-white/20 border border-white/30 hover:border-amber-500 backdrop-blur-md transition-all duration-300 mt-24 flex items-center justify-center gap-4 rounded-sm"
+                                className="group relative w-full max-w-lg py-6 bg-[#d4af37]/10 hover:bg-[#d4af37]/20 border border-[#d4af37]/30 hover:border-[#d4af37] backdrop-blur-md transition-all duration-300 mt-24 flex items-center justify-center gap-4 rounded-sm"
                             >
                                 <span className="text-[12px] md:text-[14px] font-mono tracking-[0.5em] text-white group-hover:text-amber-300 uppercase font-bold">
                                     [ CLICK TO ENTER ]
@@ -168,7 +172,10 @@ export default function NexusLayout({ pillar }: NexusLayoutProps) {
                             <PillarVisualizer pillarId={pillar.id} color={pillar.color} />
                         </group>
 
-                        <GalaxyBackground />
+                        <ambientLight intensity={0.5} />
+                        <pointLight position={[10, 10, 10]} intensity={1.5} color="#ffaa00" />
+                        <color attach="background" args={['#1a0500']} />
+                        <fog attach="fog" args={['#1a0500', 100, 400]} />
                         <EffectComposer>
                             <BloomEffect intensity={1.5} mipmapBlur luminanceThreshold={0.2} radius={0.6} />
                             <ChromaticAberration offset={new THREE.Vector2(0.002, 0.002)} />

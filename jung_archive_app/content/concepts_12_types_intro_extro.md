@@ -1,10 +1,10 @@
 ---
-title: "TYPES INTRO EXTRO (Masterpiece)"
+title: "Hướng nội & Hướng ngoại: Cánh cổng dẫn vào Tâm thức"
 date: 2026-01-27
-description: "Nội dung hoàn toàn đa dạng, không lặp cấu trúc câu."
+description: "Phân tích sâu về hai thái độ cơ bản của tâm trí và cách chúng định hình cách ta nhìn nhận thế giới."
 ---
 
-# TYPES INTRO EXTRO: NGHIÊN CỨU & ỨNG DỤNG
+# HƯỚNG NỘI & HƯỚNG NGOẠI: BẢN CHẤT VÀ ỨNG DỤNG
 
 > *"Độc bản là sự tôn trọng cao nhất đối với người đọc."*
 

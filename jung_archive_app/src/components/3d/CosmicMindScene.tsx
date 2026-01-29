@@ -4,6 +4,7 @@ import { useRef, useMemo, Suspense } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import * as THREE from 'three';
 import { EffectComposer, Bloom, Noise, ChromaticAberration } from "@react-three/postprocessing";
+import { Stars } from "@react-three/drei";
 import GalaxyBackground from "./GalaxyBackground";
 
 /**
@@ -33,9 +34,9 @@ const CoreShader = {
       // Pulsation Breathing
       float pulse = 1.0 + 0.1 * sin(uTime * 1.5);
       
-      // Colors (HDR)
-      vec3 coreWhite = vec3(10.0, 10.0, 12.0); // Blinding white core
-      vec3 rimCyan = vec3(0.0, 4.0, 5.0); // Super bright cyan rim
+      // Colors (HDR) - ULTRA VIBRANT
+      vec3 coreWhite = vec3(25.0, 25.0, 30.0); 
+      vec3 rimCyan = vec3(0.0, 12.0, 15.0); 
       
       // Mix based on fresnel
       vec3 finalColor = mix(coreWhite, rimCyan * pulse, fresnel);
@@ -88,10 +89,10 @@ function CinematicRig({ isDiving }: { isDiving: boolean }) {
             const parallaxY = pointer.y * 2.0;
 
             camera.position.x = THREE.MathUtils.lerp(camera.position.x, parallaxX, 0.05);
-            camera.position.y = THREE.MathUtils.lerp(camera.position.y, parallaxY + 5, 0.05); // +5 to look slightly down
+            camera.position.y = THREE.MathUtils.lerp(camera.position.y, parallaxY + 2, 0.05); // +2 to look slightly down
 
             // Orbit wobble
-            camera.position.z = 70 + Math.sin(t * 0.1) * 2.0;
+            camera.position.z = 50 + Math.sin(t * 0.1) * 2.0;
 
             camera.lookAt(0, 0, 0);
 
@@ -105,7 +106,7 @@ function CinematicRig({ isDiving }: { isDiving: boolean }) {
 
 export default function CosmicMindScene({ isDiving, paused }: { isDiving: boolean, paused?: boolean }) {
     return (
-        <div className="fixed inset-0 w-full h-full -z-10 bg-black overflow-hidden">
+        <div className="fixed inset-0 w-full h-full z-0 overflow-hidden pointer-events-none">
             <Canvas
                 frameloop={paused ? "never" : "always"}
                 gl={{
@@ -123,6 +124,9 @@ export default function CosmicMindScene({ isDiving, paused }: { isDiving: boolea
 
                 <Suspense fallback={null}>
                     <CinematicRig isDiving={isDiving} />
+
+                    {/* STELLAR BACKGROUND */}
+                    <Stars radius={100} depth={50} count={5000} factor={4} saturation={0.5} fade speed={1} />
 
                     {/* THE CORE */}
                     <PsycheCore />

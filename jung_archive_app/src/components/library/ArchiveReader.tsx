@@ -20,7 +20,7 @@ export default function ArchiveReader({ content, metadata }: { content: string, 
         <div className="min-h-screen bg-[#0a0b10] text-[#ececec]">
             {/* Navigation Bar */}
             <div className="fixed top-0 left-0 w-full z-50 bg-[#0a0b10]/90 backdrop-blur border-b border-[#d4af37]/20 px-6 py-4 flex items-center justify-between">
-                <Link href="/library" className="flex items-center gap-2 text-[#d4af37] hover:text-[#f1c40f] transition-colors font-cinzel font-bold">
+                <Link href="/select/library" className="flex items-center gap-2 text-[#d4af37] hover:text-[#f1c40f] transition-colors font-cinzel font-bold">
                     <ChevronLeft size={20} />
                     QUAY LẠI THƯ VIỆN
                 </Link>

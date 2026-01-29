@@ -14,17 +14,17 @@ const archivesDirectory = path.resolve(process.cwd(), '../JUNG_ARCHIVE_FINAL');
 function classifyPillar(filename: string, sourceDir: string): string {
     // If it's from the main content directory, use existing prefix logic
     if (sourceDir === contentDirectory) {
-        if (filename.startsWith('biography_')) return 'biography';
-        if (filename.startsWith('concepts_')) return 'concepts';
-        if (filename.startsWith('red_book_')) return 'red_book';
-        if (filename.startsWith('alchemy_')) return 'alchemy';
-        if (filename.startsWith('practice_')) return 'practice';
-        if (filename.startsWith('symbols_')) return 'symbols';
-        if (filename.startsWith('spirit_')) return 'spirit';
-        if (filename.startsWith('legacy_')) return 'legacy';
-        if (filename.startsWith('cosmos_')) return 'cosmos';
-        if (filename.startsWith('encounters_')) return 'encounters';
-        return 'concepts'; // Default for content dir
+        if (filename.startsWith('biography_')) return 'tieu-su';
+        if (filename.startsWith('concepts_')) return 'khai-niem';
+        if (filename.startsWith('red_book_')) return 'sach-do';
+        if (filename.startsWith('alchemy_')) return 'gia-kim';
+        if (filename.startsWith('practice_')) return 'thuc-hanh';
+        if (filename.startsWith('symbols_')) return 'bieu-tuong';
+        if (filename.startsWith('spirit_')) return 'tam-linh';
+        if (filename.startsWith('legacy_')) return 'di-san';
+        if (filename.startsWith('cosmos_')) return 'vu-tru';
+        if (filename.startsWith('encounters_')) return 'gap-go';
+        return 'khai-niem'; // Default
     }
 
     // If it's from the archives directory

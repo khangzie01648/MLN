@@ -1,4 +1,10 @@
-# Psychological Types: The Compass of the Soul
+---
+title: "Các Chức năng Tâm lý: La bàn của Tâm hồn"
+date: 2026-01-27
+description: "Bốn chức năng nhận thức (Tư duy, Cảm xúc, Cảm giác, Trực giác) và cách chúng vận hành."
+---
+
+# CÁCH LOẠI TÂM LÝ: LA BÀN CỦA TÂM HỒN
 
 *"Sensation tells you that something exists; thinking tells you what it is; feeling tells you whether it is agreeable or not; and intuition tells you whence it comes and where it is going."* — C.G. Jung
 

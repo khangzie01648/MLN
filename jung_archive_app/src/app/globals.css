@@ -110,20 +110,46 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 229, 229, 229;
-  --background-start-rgb: 10, 10, 10;
-  --background-end-rgb: 5, 5, 5;
-  --gold-accent: #d4af37;
-  --font-serif: var(--font-playfair), serif;
-  --font-sans: var(--font-montserrat), sans-serif;
+  /* DARK ALCHEMICAL PALETTE */
+  --c-ink: #050505;
+  --c-gold: #ffd700;
+  --c-blood: #8a0303;
+  --c-void: #000000;
+
+  --foreground-rgb: 255, 255, 255;
+  --background-start-rgb: 0, 0, 0;
+  --background-end-rgb: 5, 2, 0;
+
+  --font-cinzel: 'Cinzel', serif;
+  --font-playfair: 'Playfair Display', serif;
+  --font-montserrat: 'Montserrat', sans-serif;
 }
 
 body {
-  margin: 0;
-  padding: 0;
-  background: black;
-  color: rgb(var(--foreground-rgb));
-  font-family: var(--font-sans);
+  color: #ffffff;
+  background: #000000;
+  font-family: var(--font-montserrat), sans-serif;
+  overflow-x: hidden;
+}
+
+/* GRAIN TEXTURE OVERLAY */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  mix-blend-mode: multiply;
+}
+
+::selection {
+  background: var(--c-gold);
+  color: var(--c-ink);
+  text-shadow: none;
 }
 
 h1,
@@ -350,4 +376,156 @@ h6 {
   100% {
     transform: translateX(100%);
   }
+}
+
+/* --- COSMIC AI TRANSITION FX (V3) --- */
+
+/* 1. LIQUID DISTORTION */
+@keyframes liquid-drift {
+  0% {
+    transform: translate(0, 0);
+  }
+
+  100% {
+    transform: translate(-20%, -10%);
+  }
+}
+
+/* 2. RGB SHIFT / CHROMATIC GLITCH */
+@keyframes rgb-shift-aggressive {
+  0% {
+    text-shadow: -2px 0 #ff0000, 2px 0 #0000ff;
+    clip-path: inset(0 0 0 0);
+    transform: skew(0deg);
+  }
+
+  20% {
+    text-shadow: -4px -2px #ff0000, 4px 2px #0000ff;
+    clip-path: inset(10% 0 80% 0);
+    transform: skew(5deg);
+  }
+
+  40% {
+    text-shadow: 4px 2px #ff0000, -4px -2px #0000ff;
+    clip-path: inset(50% 0 10% 0);
+    transform: skew(-5deg);
+  }
+
+  100% {
+    text-shadow: -2px 0 #ff0000, 2px 0 #0000ff;
+    clip-path: inset(0 0 0 0);
+    transform: skew(0deg);
+  }
+}
+
+.glitch-aggressive {
+  animation: rgb-shift-aggressive 0.3s infinite;
+}
+
+/* 3. QUANTUM PIXELATE MASK */
+.image-pixelated {
+  image-rendering: pixelated;
+  filter: contrast(1.5) brightness(1.2);
+}
+
+/* 4. DISPLACEMENT MAP ANIMATION */
+@keyframes turbulence-shift {
+  0% {
+    transform: translateX(0%);
+  }
+
+  100% {
+    background-position: 0% 100%;
+  }
+}
+
+.hologram-overlay {
+  background: linear-gradient(to bottom,
+      transparent 50%,
+      rgba(0, 255, 255, 0.1) 50%,
+      rgba(0, 255, 255, 0.1) 52%,
+      transparent 52%);
+  background-size: 100% 4px;
+  animation: hologram-scan 0.3s linear infinite;
+}
+
+/* --- V4: HYPER-SURREAL FX --- */
+
+/* 1. GOOEY CONTAINER (Needs SVG Filter in HTML) */
+.gooey-container {
+  filter: url('#goo');
+}
+
+/* 2. HYPER-GLITCH TEXT */
+@keyframes glitch-skew {
+  0% {
+    transform: skew(0deg);
+  }
+
+  20% {
+    transform: skew(-10deg);
+  }
+
+  40% {
+    transform: skew(10deg);
+  }
+
+  60% {
+    transform: skew(-5deg);
+  }
+
+  80% {
+    transform: skew(5deg);
+  }
+
+  100% {
+    transform: skew(0deg);
+  }
+}
+
+.hyper-glitch {
+  animation: glitch-skew 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) both infinite;
+  position: relative;
+}
+
+.hyper-glitch::before,
+.hyper-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000;
+}
+
+.hyper-glitch::before {
+  left: 2px;
+  text-shadow: -1px 0 #ff00c1;
+  clip-path: inset(44% 0 61% 0);
+  animation: glitch-anim-1 2s infinite linear alternate-reverse;
+}
+
+.hyper-glitch::after {
+  left: -2px;
+  text-shadow: -1px 0 #00fff9;
+  clip-path: inset(54% 0 21% 0);
+  animation: glitch-anim-2 3s infinite linear alternate-reverse;
+}
+
+/* 3. CRT SCREEN LINES */
+.crt-lines {
+  background: linear-gradient(to bottom,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0) 50%,
+      rgba(0, 0, 0, 0.2) 50%,
+      rgba(0, 0, 0, 0.2));
+  background-size: 100% 4px;
+  pointer-events: none;
+}
+
+/* 4. SCRAMBLE DECODE */
+.font-decode {
+  font-family: 'Courier New', Courier, monospace;
+  text-transform: uppercase;
 }

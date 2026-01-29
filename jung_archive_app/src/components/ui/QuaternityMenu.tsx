@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 
-import { PILLARS } from "@/lib/content-config";
+import { PILLARS } from "@/lib/pillar-constants";
 
 export default function QuaternityMenu() {
     return (
@@ -25,7 +25,7 @@ export default function QuaternityMenu() {
                 {PILLARS.map((pillar, index) => (
                     <Link
                         key={pillar.id}
-                        href={`/pillar/${pillar.id}`}
+                        href={`/select/pillar/${pillar.id}`}
                     >
                         <motion.div
                             initial={{ opacity: 0, y: 20 }}
