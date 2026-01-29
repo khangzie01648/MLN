@@ -1,7 +1,7 @@
 # 🏛️ PROJECT CODEX: THE JUNG ARCHIVE
 > **"Wholeness is not achieved by cutting off a portion of one's being, but by integration of the contraries."** — C.G. Jung
 
-![System Badge](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge) ![Version](https://img.shields.io/badge/Version-1.2.0-blue?style=for-the-badge&color=0a0b10) ![Tech](https://img.shields.io/badge/Core-Next.js_16-black?style=for-the-badge&logo=next.js)
+![System Badge](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge) ![Version](https://img.shields.io/badge/Version-1.2.0-blue?style=for-the-badge&color=0a0b10) ![Tech](https://img.shields.io/badge/Core-Next.js_16-black?style=for-the-badge&logo=next.js) ![Last Scan](https://img.shields.io/badge/Last_Scan-2026--01--29-orange?style=for-the-badge)
 
 ## 📑 Executive Summary
 **The Jung Archive** is a high-fidelity **Cinematic Web Experience** designed to digitize and visualize the complex psychological framework of Carl Gustav Jung. Unlike traditional archives, this project leverages bleeding-edge WebGL rendering and immersive UI paradigms to create a "Digital Mandala"—a spatial interface where users explore abstract concepts (Alchemy, Archetypes, The Unconscious) through interactive 3D artifacts and atmospheric storytelling.
