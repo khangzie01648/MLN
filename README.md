@@ -1,18 +1,26 @@
 # 🏛️ PROJECT CODEX: THE JUNG ARCHIVE
 > **"Wholeness is not achieved by cutting off a portion of one's being, but by integration of the contraries."** — C.G. Jung
 
-![System Badge](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge) ![Version](https://img.shields.io/badge/Version-1.2.0-blue?style=for-the-badge&color=0a0b10) ![Tech](https://img.shields.io/badge/Core-Next.js_16-black?style=for-the-badge&logo=next.js) ![Last Scan](https://img.shields.io/badge/Last_Scan-2026--01--29-orange?style=for-the-badge)
+![System Badge](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge) ![Version](https://img.shields.io/badge/Version-1.2.5-blue?style=for-the-badge&color=0a0b10) ![Tech](https://img.shields.io/badge/Core-Next.js_16-black?style=for-the-badge&logo=next.js) ![Last Scan](https://img.shields.io/badge/Last_Scan-2026--01--29-orange?style=for-the-badge)
 
 ## 📑 Executive Summary
 **The Jung Archive** is a high-fidelity **Cinematic Web Experience** designed to digitize and visualize the complex psychological framework of Carl Gustav Jung. Unlike traditional archives, this project leverages bleeding-edge WebGL rendering and immersive UI paradigms to create a "Digital Mandala"—a spatial interface where users explore abstract concepts (Alchemy, Archetypes, The Unconscious) through interactive 3D artifacts and atmospheric storytelling.
 
-This repository hosts the complete source code for the platform, engineered with a focus on **Semantic Architecture**, **Performance Optimization**, and **Scalable Content Management**.
+---
+
+## 👁️ The Vision: Digital Surrealism
+The project aims to transcend the "Blog" or "Wiki" format, aiming instead for an **interactive grimoire**. Every pixel is designed to evoke the feeling of peering into the unconscious.
+
+### Core Visual Pillars:
+*   **The Void Aesthetic**: A deep-space palette (`#000508`) that serves as the canvas for the mind's projections.
+*   **Alchemical Gold**: Highlights in `#ffd700` and `#d4af37` symbolizing the "Great Work" (Magnum Opus).
+*   **Sacred Geometry**: Utilizing Mandalas and Platonic solids as navigation anchors.
 
 ---
 
 ## 🏗️ System Architecture
 
-The project adopts a strict **Clean Architecture** pattern, enforcing separation of concerns between the Visual Layer (Presentation), the Logical Layer (Domain), and the Data Layer (Content).
+Engineered with a focus on **Semantic Architecture**, **Performance Optimization**, and **Scalable Content Management**.
 
 ```mermaid
 graph TD
@@ -33,86 +41,89 @@ graph TD
     end
 ```
 
-### directory-structure-v2.0
+### 📂 Directory Structure v3.0 (Clean Architecture)
 ```bash
 jung_archive_app/
-├── 📂 app/                     # Next.js App Router (The Controller)
-│   ├── (system)/               # System routes (playground, maintenance)
-│   ├── select/                 # Core Feature Routes
-│   │   ├── library/            # 📚 MODULE: Digital Library (Masonry, Filter)
-│   │   ├── pillar/             # 🏛️ MODULE: 3D Pillars (Dynamic Rendering)
-│   │   └── page.tsx            # Mandala Hub
-│   └── page.tsx                # Entry Point (Cinematic Intro)
+├── 📂 app/                     # Controller Layer
+│   ├── (system)/               # Playground, Debug, Experiments
+│   ├── select/                 # Core Navigation (Mandala Hub)
+│   │   ├── library/            # 📚 Digital Library Module
+│   │   └── pillar/             # 🏛️ Dynamic Pillar Module
+│   └── page.tsx                # Cinematic Landing (The Threshold)
 │
-├── 📂 components/              # Atomic Design System
-│   ├── 🧊 3d/                  # WebGL Layer (High Computational Load)
-│   │   ├── backgrounds/        # Shaders & Enviromnets (Galaxy, Nebula)
-│   │   ├── objects/            # Artifacts (Philosopher's Stone, Books)
-│   │   └── scenes/             # Composition Logic
+├── 📂 components/              # View Layer (Atomic Design)
+│   ├── 🧊 3d/                  # WebGL Components (Heavy Duty)
+│   │   ├── backgrounds/        # Shaders (Galaxy, Nebula, Starfields)
+│   │   ├── objects/            # Interactive Models (Artifacts)
+│   │   └── scenes/             # High-level compositions
 │   │
-│   ├── 🎨 ui/                  # UI Kit (Presentation Layer)
-│   │   ├── effects/            # VFX (Grain, Glitch, Warp)
-│   │   └── features/           # Functional Widgets (Navigation, Meters)
+│   ├── 🎨 ui/                  # 2D Interface Components
+│   │   ├── effects/            # CRT Grain, Meteor Rain, Solar Flares
+│   │   └── features/           # Journaling, Oracle UI, Nav Bars
 │   │
-│   ├── 📐 templates/           # Layout Templates (DRY Principle)
-│   └── 🎬 transitions/         # Animation Orchestration
+│   ├── 📐 templates/           # Layout Blueprints
+│   └── 🎬 transitions/         # Motion Orchestration (VFX Entrances)
 │
-├── 📂 content/                 # Data Layer (Headless CMS pattern)
-│   └── *.md                    # Structured Markdown with Frontmatter
+├── 📂 content/                 # Data Layer (Headless MDX Pattern)
+│   └── *.md                    # 131+ Archival Files
 │
-└── 📂 lib/                     # Kernel
-    ├── content-config.ts       # Data Parsing Logic
-    └── utils.ts                # Helper Functions
+└── 📂 lib/                     # Domain Layer
+    ├── content-config.ts       # Content Mapping Kernel
+    └── utils.ts                # Pure Logic Helpers
 ```
 
 ---
 
 ## ⚡ Technical Specification
 
-### 1. Core Framework
-*   **Successor Stack**: Built on **Next.js 16**, utilizing React Server Components (RSC) to minimize client-side bundle size while delivering rich metadata for SEO.
-*   **Type Safety**: **TypeScript** (Strict Mode) ensures codebase reliability and developer velocity.
+### 1. Engine & Framework
+*   **Next.js 16 (Turbopack)**: Leveraging Server Components for instant metadata delivery and Client Components for heavy interactivity.
+*   **React 19**: Utilizes concurrent rendering to keep the 3D frame-rate consistent even during DOM updates.
 
-### 2. Immersive Graphics Engine
-*   **React Three Fiber (R3F)**: A React renderer for Three.js. It manages the scenegraph declaratively, allowing 3D objects to react to state changes.
-*   **Shader Material**: Custom GLSL shaders (`.vert`, `.frag`) are used for non-standard visual effects (e.g., "Liquid Gold", "Void Distortion"), bypassing standard lighting models for artistic control.
-*   **Post-Processing**: Cinematic effects chain (Bloom, Vignette, Chromatic Aberration, Noise) handled by GPU.
+### 2. Immersive Visual Layer
+*   **WebGL / R3F**: Scenegraph managed via React Three Fiber.
+*   **Custom Shader Materials**: Hand-written GLSL for logic-defying materials like **"Liquid Gold"**, **"Psychic Ink"**, and **"Neural Mesh"**.
+*   **Post-processing Pipeline**:
+    *   **Bloom**: For ethereal glows.
+    *   **Chromatic Aberration**: For a dream-like, slightly unstable visual quality.
+    *   **Noise/Scanlines**: For the "Archival Record" feel.
 
-### 3. Motion & Interaction
-*   **Framer Motion 12**: Handles layout animations (Shared Layout API) and complex orchestration (staggerChildren).
-*   **Design Tokens**: **Tailwind CSS** configured with a semantic color palette (`#d4af37` Gold, `#0a0b10` Void) and typography (Cinzel, Geist Mono).
+### 3. Motion System
+*   **Framer Motion 12**: Synchronizes 2D UI with 3D scene events.
+*   **Thematic Entrances**: 10 unique, symbolically accurate entrance transitions for each pillar (e.g., "Liquid Gold Fusion" for Alchemy).
+
+---
+
+## 🚀 Experience Workflow
+1.  **The Threshold (Landing)**: A portal into the work.
+2.  **The Mandala (Select)**: An orbiting 3D interface for navigation.
+3.  **The Pillar (Subject)**: Immersive 3D visualization of a specific Jungian concept.
+4.  **The Codex (Reading)**: A focused "Deep Reader" environment optimized for long-form study.
 
 ---
 
 ## 🔧 Installation & Deployment
 
 ### Prerequisites
-*   Node.js v18.17+ (LTS recommended)
-*   npm v9+ or pnpm v8+
-*   Git
+*   Node.js v18.17+ (LTS)
+*   npm v9+
+*   GPU with WebGL2 Support
 
-### Local Development Setup
-1.  **Clone Repository**
-    ```bash
-    git clone [repository-url]
-    cd jung_archive_app
-    ```
+### Local Development
+```bash
+# 1. Clone & Enter
+git clone [repository-url]
+cd jung_archive_app
 
-2.  **Install Dependencies**
-    *Using legacy peer deps is recommended due to Three.js ecosystem volatility.*
-    ```bash
-    npm install --legacy-peer-deps
-    ```
+# 2. Install (Strict Ecosystem)
+npm install --legacy-peer-deps
 
-3.  **Launch Dev Environment**
-    The server is configured to run on port `8080` to prevent conflicts.
-    ```bash
-    npm run dev
-    ```
-    > **Access Point**: `http://localhost:8080`
+# 3. Development Mode
+npm run dev
+# Access: http://localhost:8080
+```
 
 ### Production Build
-Execute the optimization pipeline to generate static assets and serverless functions.
 ```bash
 npm run build
 npm start
@@ -120,32 +131,34 @@ npm start
 
 ---
 
-## 📚 Content Management Protocol
+## 📚 Content Protocol
+To add to the archive, create a `.md` file in `/content` with the following schema:
 
-The system utilizes a **File-Based CMS** approach. Content is managed via Markdown files, processed at build time.
-
-**File Location**: `./content/*.md`
-
-**Standard Frontmatter Schema**:
 ```yaml
 ---
-title: "The Red Book: Liber Novus"   # Display Title
-description: "A confrontation with the unconscious." # Meta Description
-pillarId: "red_book"                 # Relation ID (Foreign Key)
-order: 1                             # Sorting Index
-image: "/assets/cover_rb.jpg"        # OGP Image
-published: true                      # Visibility Toggle
+title: "The Collective Unconscious"
+description: "A blueprint for the human psychic structure."
+pillarId: "concepts"
+order: 1
+image: "/assets/thumb.jpg"
+published: true
 ---
 ```
 
-**Valid `pillarId` Enum**:
-`tieu-su` | `khai-niem` | `sach-do` | `gia-kim` | `thuc-hanh` | `bieu-tuong` | `tam-linh` | `di-san` | `vu-tru` | `gap-go`
+---
+
+## 🗺️ Roadmap
+- [x] Phase 1: Core 3D Mandala Engine
+- [x] Phase 2: Digital Library Integration (131+ records)
+- [x] Phase 3: Thematic Entrance Transitions
+- [ ] Phase 4: AI "Oracle" Integration (Talk to the archive)
+- [ ] Phase 5: VR/WebXR Support for immersive meditation
 
 ---
 
-## 🛡️ License & Acknowledgments
-*   **License**: MIT License.
-*   **Core Logic**: Developed by Antigravity Engineering.
-*   **Visual Direction**: Inspired by the collected works of C.G. Jung.
+## 🛡️ Credits
+- **Engineering**: Antigravity AI
+- **Direction**: User (Philosophical Lead)
+- **Engine**: Three.js & Framer Motion
 
-> *“Until you make the unconscious conscious, it will direct your life and you will call it fate.”*
+> *“I am not what happened to me, I am what I choose to become.”*
