@@ -1,98 +1,150 @@
-# 🏛️ THE JUNG DIGITAL LIBRARY (KHO TÀNG C.G. JUNG)
+# 🏛️ PROJECT CODEX: THE JUNG ARCHIVE
+> **"Wholeness is not achieved by cutting off a portion of one's being, but by integration of the contraries."** — C.G. Jung
 
-> **"Không có sự ra đời của ý thức nếu không có đau đớn."** — C.G. Jung
+![System Badge](https://img.shields.io/badge/Status-Production%20Ready-success?style=for-the-badge) ![Version](https://img.shields.io/badge/Version-1.2.0-blue?style=for-the-badge&color=0a0b10) ![Tech](https://img.shields.io/badge/Core-Next.js_16-black?style=for-the-badge&logo=next.js)
 
- Dự án **Thư Viện Số Carl Jung** là một nỗ lực kỹ thuật số nhằm lưu trữ, chuẩn hóa và hiển thị toàn bộ di sản tri thức của Carl Gustav Jung dưới dạng một trải nghiệm web "điện ảnh" (Cinematic Web Experience).
+## 📑 Executive Summary
+**The Jung Archive** is a high-fidelity **Cinematic Web Experience** designed to digitize and visualize the complex psychological framework of Carl Gustav Jung. Unlike traditional archives, this project leverages bleeding-edge WebGL rendering and immersive UI paradigms to create a "Digital Mandala"—a spatial interface where users explore abstract concepts (Alchemy, Archetypes, The Unconscious) through interactive 3D artifacts and atmospheric storytelling.
 
----
-
-## 🌟 TÌNH TRẠNG DỰ ÁN (PROJECT STATUS)
-
-Dự án đã hoàn thành **Giai đoạn 3 & 4 (Integration & UI)**.
-
-### 1. KHO LƯU TRỮ CHUẨN HÓA (Approved Archive)
-*   **Số lượng:** 130+ Tác phẩm & Tài liệu gốc.
-*   **Định dạng:** Markdown chuẩn (`.md`) với Frontmatter Metadata đầy đủ.
-*   **Cấu trúc:**
-    *   **Sách Cốt Lõi (`vn_*`):** 10 chủ đề nền tảng đã được mở rộng nội dung gấp 10 lần.
-    *   **Hồ Sơ Toàn Thư (`archive_*`):** Các bộ sưu tập đồ sộ (Master Compendium).
-    *   **Tiểu Luận (`essay_*`):** Các bài phân tích chuyên sâu.
-
-### 2. GIAO DIỆN "CINEMATIC" (The Void UI)
-*   **Theme:** "Deep Void" (Hư không thẳm sâu) - Nền tối `#0a0b10` kết hợp viền vàng kim `#d4af37`.
-*   **The Grand Hall (`/select/library`):**
-    *   **Masonry Grid:** Lưới hiển thị sách tự động sắp xếp thông minh.
-    *   **Real-time Filter & Search:** Tìm kiếm và lọc theo chủ đề (Giả kim thuật, Sách Đỏ, UFO...) ngay lập tức.
-    *   **Staggered Animation:** Hiệu ứng các cuốn sách "bay" ra từ hư không.
-*   **Deep Reader (`/select/pillar/[id]/reading/[slug]`):**
-    *   **Typography:** Sử dụng Font **Cinzel** (Tiêu đề) và **Serif** (Nội dung) cho trải nghiệm đọc như sách cổ.
-    *   **Sticky TOC:** Mục lục tự động trượt theo người đọc.
-    *   **Visuals:** Render đầy đủ hình ảnh, blockquote, và các định dạng Markdown phức tạp.
+This repository hosts the complete source code for the platform, engineered with a focus on **Semantic Architecture**, **Performance Optimization**, and **Scalable Content Management**.
 
 ---
 
-## 🛠️ CÔNG NGHỆ SỬ DỤNG (TECH STACK)
+## 🏗️ System Architecture
 
-Dự án được xây dựng trên nền tảng Web hiện đại nhất (2025-2026 Ready):
+The project adopts a strict **Clean Architecture** pattern, enforcing separation of concerns between the Visual Layer (Presentation), the Logical Layer (Domain), and the Data Layer (Content).
 
-*   **Core:** [Next.js 16](https://nextjs.org/) (App Router, Server Components).
-*   **Language:** TypeScript (Strict Mode).
-*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) + Custom Design Tokens.
-*   **Animation:** [Framer Motion v12](https://www.framer.com/motion/) (Spring physics, Layout transitions).
-*   **Content Engine:**
-    *   `gray-matter`: Xử lý Metadata (YAML Frontmatter).
-    *   `react-markdown` (v9): Render nội dung an toàn và đẹp mắt.
-    *   `rehype-raw` / `remark-gfm`: Hỗ trợ HTML & GitHub Flavored Markdown.
+```mermaid
+graph TD
+    User[End User] --> |Interacts| UI[Presentation Layer]
+    UI --> |Renders| 3D[WebGL / R3F Engine]
+    UI --> |Requests| App[Next.js App Router]
+    
+    subgraph "Core Application"
+        App --> |Routing| Pages[Page Controllers]
+        Pages --> |Imports| Components[Atomic Components]
+        Components --> |Uses| Hooks[Custom Hooks]
+    end
+
+    subgraph "Data & Logic"
+        Hooks --> |Fetches| Lib[Content Engine]
+        Lib --> |Parses| MD[Markdown Files]
+        Lib --> |Configures| Config[Constants & Types]
+    end
+```
+
+### directory-structure-v2.0
+```bash
+jung_archive_app/
+├── 📂 app/                     # Next.js App Router (The Controller)
+│   ├── (system)/               # System routes (playground, maintenance)
+│   ├── select/                 # Core Feature Routes
+│   │   ├── library/            # 📚 MODULE: Digital Library (Masonry, Filter)
+│   │   └── pillar/             # 🏛️ MODULE: 3D Pillars (Dynamic Rendering)
+│   └── page.tsx                # Entry Point (Cinematic Intro)
+│
+├── 📂 components/              # Atomic Design System
+│   ├── 🧊 3d/                  # WebGL Layer (High Computational Load)
+│   │   ├── backgrounds/        # Shaders & Enviromnets (Galaxy, Nebula)
+│   │   ├── objects/            # Artifacts (Philosopher's Stone, Books)
+│   │   └── scenes/             # Composition Logic
+│   │
+│   ├── 🎨 ui/                  # UI Kit (Presentation Layer)
+│   │   ├── effects/            # VFX (Grain, Glitch, Warp)
+│   │   └── features/           # Functional Widgets (Navigation, Meters)
+│   │
+│   ├── 📐 templates/           # Layout Templates (DRY Principle)
+│   └── 🎬 transitions/         # Animation Orchestration
+│
+├── 📂 content/                 # Data Layer (Headless CMS pattern)
+│   └── *.md                    # Structured Markdown with Frontmatter
+│
+└── 📂 lib/                     # Kernel
+    ├── content-config.ts       # Data Parsing Logic
+    └── utils.ts                # Helper Functions
+```
 
 ---
 
-## 🚀 HƯỚNG DẪN CÀI ĐẶT (GETTING STARTED)
+## ⚡ Technical Specification
 
-Để chạy Thư viện trên máy cục bộ của bạn:
+### 1. Core Framework
+*   **Successor Stack**: Built on **Next.js 16**, utilizing React Server Components (RSC) to minimize client-side bundle size while delivering rich metadata for SEO.
+*   **Type Safety**: **TypeScript** (Strict Mode) ensures codebase reliability and developer velocity.
 
-1.  **Cài đặt Dependencies:**
+### 2. Immersive Graphics Engine
+*   **React Three Fiber (R3F)**: A React renderer for Three.js. It manages the scenegraph declaratively, allowing 3D objects to react to state changes.
+*   **Shader Material**: Custom GLSL shaders (`.vert`, `.frag`) are used for non-standard visual effects (e.g., "Liquid Gold", "Void Distortion"), bypassing standard lighting models for artistic control.
+*   **Post-Processing**: Cinematic effects chain (Bloom, Vignette, Chromatic Aberration, Noise) handled by GPU.
+
+### 3. Motion & Interaction
+*   **Framer Motion 12**: Handles layout animations (Shared Layout API) and complex orchestration (staggerChildren).
+*   **Design Tokens**: **Tailwind CSS** configured with a semantic color palette (`#d4af37` Gold, `#0a0b10` Void) and typography (Cinzel, Geist Mono).
+
+---
+
+## 🔧 Installation & Deployment
+
+### Prerequisites
+*   Node.js v18.17+ (LTS recommended)
+*   npm v9+ or pnpm v8+
+*   Git
+
+### Local Development Setup
+1.  **Clone Repository**
     ```bash
-    npm install
-    # Lưu ý: Nếu gặp lỗi xung đột peer-deps, hãy dùng:
-    # npm install --legacy-peer-deps
+    git clone [repository-url]
+    cd jung_archive_app
     ```
 
-2.  **Khởi chạy Server Development:**
-    Server chạy port 8080 để tránh xung đột.
+2.  **Install Dependencies**
+    *Using legacy peer deps is recommended due to Three.js ecosystem volatility.*
+    ```bash
+    npm install --legacy-peer-deps
+    ```
+
+3.  **Launch Dev Environment**
+    The server is configured to run on port `8080` to prevent conflicts.
     ```bash
     npm run dev
     ```
+    > **Access Point**: `http://localhost:8080`
 
-3.  **Truy cập Thư viện:**
-    Mở trình duyệt và vào: `http://localhost:8080/select/library`
-
----
-
-## 📂 CẤU TRÚC THƯ MỤC (DIRECTORY)
-
-```
-.
-├── app/
-│   ├── select/
-│   │   ├── library/             # Phân hệ Thư viện Chính
-│   │   ├── pillar/              # Phân hệ Pillars (3D Objects)
-│   │   └── page.tsx             # Trang chọn (Mandala Hub)
-│   └── page.tsx                 # Landing Page (Intro)
-├── components/
-│   ├── library/
-│   │   ├── ArchiveReader.tsx    # Component hiển thị nội dung đọc
-│   │   └── ...
-│   ├── 3d/                      # Các thành phần 3D (Refactored)
-│   │   ├── objects/
-│   │   ├── scenes/
-│   │   └── backgrounds/
-│   └── ui/                      # Giao diện UI (Effects & Features)
-├── content/                     # 131 files nội dung Markdown
-├── lib/
-│   └── content-config.ts        # Bộ não xử lý dữ liệu (Scanner & Mapper)
-└── ...
+### Production Build
+Execute the optimization pipeline to generate static assets and serverless functions.
+```bash
+npm run build
+npm start
 ```
 
 ---
 
-*“Người nhìn ra bên ngoài thì mơ mộng, người nhìn vào bên trong thì tỉnh thức.”*
+## 📚 Content Management Protocol
+
+The system utilizes a **File-Based CMS** approach. Content is managed via Markdown files, processed at build time.
+
+**File Location**: `./content/*.md`
+
+**Standard Frontmatter Schema**:
+```yaml
+---
+title: "The Red Book: Liber Novus"   # Display Title
+description: "A confrontation with the unconscious." # Meta Description
+pillarId: "red_book"                 # Relation ID (Foreign Key)
+order: 1                             # Sorting Index
+image: "/assets/cover_rb.jpg"        # OGP Image
+published: true                      # Visibility Toggle
+---
+```
+
+**Valid `pillarId` Enum**:
+`tieu-su` | `khai-niem` | `sach-do` | `gia-kim` | `thuc-hanh` | `bieu-tuong` | `tam-linh` | `di-san` | `vu-tru` | `gap-go`
+
+---
+
+## 🛡️ License & Acknowledgments
+*   **License**: MIT License.
+*   **Core Logic**: Developed by Antigravity Engineering.
+*   **Visual Direction**: Inspired by the collected works of C.G. Jung.
+
+> *“Until you make the unconscious conscious, it will direct your life and you will call it fate.”*
